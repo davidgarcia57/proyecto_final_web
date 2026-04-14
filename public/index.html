@@ -3,60 +3,114 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sistema Escolar – Dashboard</title>
+  <title>EduGest — Dashboard</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
-  <!-- Navbar -->
+  <!-- ── Navbar ──────────────────────────────────────────────────────────── -->
   <nav class="navbar">
-    <div class="navbar-brand">🎓 Sistema Escolar</div>
+    <div class="navbar-brand">
+      <img src="images/logo.png" alt="EduGest" class="navbar-logo" />
+      <div class="navbar-brand-dot"></div>
+    </div>
     <div class="navbar-user">
-      <span id="usuarioNombre">Cargando...</span>
-      <button id="logoutBtn" class="btn btn-outline">Cerrar sesión</button>
+      <div class="navbar-user-info">
+        <div class="navbar-avatar" id="navbarAvatar">?</div>
+        <span class="navbar-user-name" id="usuarioNombre">Cargando...</span>
+      </div>
+      <!-- Settings gear -->
+      <button id="settingsBtn" class="settings-btn" title="Ajustes">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </button>
+      <button id="logoutBtn" class="btn btn-outline">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        Salir
+      </button>
     </div>
   </nav>
 
-  <!-- Main content -->
+  <!-- ── Main ────────────────────────────────────────────────────────────── -->
   <main class="container">
+
+    <!-- Page header -->
+    <div class="page-header">
+      <h1>Dashboard</h1>
+      <p>Gestión integral de alumnos y grupos</p>
+    </div>
 
     <!-- Stats -->
     <section class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-icon">👥</div>
+
+      <div class="stat-card stat-card-blue">
+        <div class="stat-icon">
+          <!-- Users icon -->
+          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
         <div class="stat-info">
           <span id="totalAlumnos" class="stat-number">0</span>
           <span class="stat-label">Alumnos registrados</span>
         </div>
       </div>
-      <div class="stat-card">
-        <div class="stat-icon">📚</div>
+
+      <div class="stat-card stat-card-orange">
+        <div class="stat-icon">
+          <!-- Book-open icon -->
+          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+          </svg>
+        </div>
         <div class="stat-info">
           <span id="totalGrupos" class="stat-number">0</span>
           <span class="stat-label">Grupos activos</span>
         </div>
       </div>
+
     </section>
 
     <!-- Alumnos section -->
     <section class="section-card">
       <div class="section-header">
-        <h2>Gestión de Alumnos</h2>
-        <button id="btnNuevoAlumno" class="btn btn-primary">+ Nuevo Alumno</button>
+        <div class="section-header-left">
+          <h2>Gestión de Alumnos</h2>
+          <span class="section-header-sub">Consulta, agrega o edita registros</span>
+        </div>
+        <button id="btnNuevoAlumno" class="btn btn-primary">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          Nuevo Alumno
+        </button>
       </div>
 
-      <!-- Buscador -->
+      <!-- Search -->
       <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="Buscar por nombre o grupo..." />
+        <div class="search-input-wrap">
+          <svg class="search-icon" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="text" id="searchInput" placeholder="Buscar por nombre o grupo..." />
+        </div>
       </div>
 
-      <!-- Tabla -->
+      <!-- Table -->
       <div class="table-wrapper">
         <table id="tablaAlumnos">
           <thead>
             <tr>
               <th>#</th>
-              <th>Nombre</th>
+              <th>Alumno</th>
               <th>Grupo</th>
               <th>Email</th>
               <th>Teléfono</th>
@@ -69,62 +123,190 @@
         </table>
       </div>
     </section>
+
   </main>
 
-  <!-- Modal Alumno -->
+  <!-- ── Modal Alumno ─────────────────────────────────────────────────────── -->
   <div id="modalAlumno" class="modal hidden">
     <div class="modal-overlay"></div>
     <div class="modal-content">
       <div class="modal-header">
-        <h3 id="modalTitulo">Nuevo Alumno</h3>
+        <div class="modal-header-icon">
+          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+        </div>
+        <div class="modal-header-text">
+          <h3 id="modalTitulo">Nuevo Alumno</h3>
+          <span class="modal-header-sub">Completa los datos del alumno</span>
+        </div>
         <button class="modal-close" id="cerrarModal">&times;</button>
       </div>
       <form id="formAlumno">
         <input type="hidden" id="alumnoId" />
-        <div class="form-group">
-          <label for="alumnoNombre">Nombre <span class="required">*</span></label>
-          <input type="text" id="alumnoNombre" placeholder="Nombre completo" required />
+        <div class="form-row">
+          <div class="form-group">
+            <label for="alumnoNombre">Nombre <span class="required">*</span></label>
+            <input type="text" id="alumnoNombre" placeholder="Nombre completo" required />
+          </div>
+          <div class="form-group">
+            <label for="alumnoGrupo">Grupo <span class="required">*</span></label>
+            <input type="text" id="alumnoGrupo" placeholder="Ej: 3A, 2B" required />
+          </div>
         </div>
-        <div class="form-group">
-          <label for="alumnoGrupo">Grupo <span class="required">*</span></label>
-          <input type="text" id="alumnoGrupo" placeholder="Ej: 3A, 2B" required />
-        </div>
-        <div class="form-group">
-          <label for="alumnoEmail">Email</label>
-          <input type="email" id="alumnoEmail" placeholder="correo@ejemplo.com" />
-        </div>
-        <div class="form-group">
-          <label for="alumnoTelefono">Teléfono</label>
-          <input type="text" id="alumnoTelefono" placeholder="Ej: 555-1234" />
+        <div class="form-row">
+          <div class="form-group">
+            <label for="alumnoEmail">Email</label>
+            <input type="email" id="alumnoEmail" placeholder="correo@ejemplo.com" />
+          </div>
+          <div class="form-group">
+            <label for="alumnoTelefono">Teléfono</label>
+            <input type="text" id="alumnoTelefono" placeholder="Ej: 555-1234" />
+          </div>
         </div>
         <div id="formError" class="alert alert-error hidden"></div>
         <div class="modal-actions">
           <button type="button" class="btn btn-outline" id="cancelarModal">Cancelar</button>
-          <button type="submit" class="btn btn-primary" id="btnGuardar">Guardar</button>
+          <button type="submit" class="btn btn-primary" id="btnGuardar">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+              <polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
+            </svg>
+            Guardar
+          </button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- Modal Confirmación Eliminar -->
+  <!-- ── Modal Confirmar Eliminar ─────────────────────────────────────────── -->
   <div id="modalEliminar" class="modal hidden">
     <div class="modal-overlay"></div>
     <div class="modal-content modal-sm">
-      <div class="modal-header">
-        <h3>Confirmar eliminación</h3>
+      <div class="modal-header modal-header-danger">
+        <div class="modal-header-icon">
+          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+            <path d="M10 11v6"/><path d="M14 11v6"/>
+            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+          </svg>
+        </div>
+        <div class="modal-header-text">
+          <h3>Confirmar eliminación</h3>
+          <span class="modal-header-sub">Esta acción no se puede deshacer</span>
+        </div>
         <button class="modal-close" id="cerrarEliminar">&times;</button>
       </div>
-      <p class="confirm-text">¿Estás seguro de que deseas eliminar a <strong id="nombreEliminar"></strong>?</p>
-      <div class="modal-actions">
-        <button class="btn btn-outline" id="cancelarEliminar">Cancelar</button>
-        <button class="btn btn-danger" id="confirmarEliminar">Eliminar</button>
+      <div class="modal-body">
+        <p class="confirm-text">¿Estás seguro de que deseas eliminar a <strong id="nombreEliminar"></strong>? El registro será eliminado permanentemente.</p>
+        <div class="modal-actions">
+          <button class="btn btn-outline" id="cancelarEliminar">Cancelar</button>
+          <button class="btn btn-danger" id="confirmarEliminar">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+            </svg>
+            Eliminar
+          </button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Toast notificación -->
+  <!-- Toast -->
   <div id="toast" class="toast hidden"></div>
 
+  <!-- ── Settings overlay & panel ─────────────────────────────────────────── -->
+  <div id="settingsOverlay" class="settings-overlay"></div>
+
+  <aside id="settingsPanel" class="settings-panel">
+    <div class="settings-header">
+      <h2>Ajustes</h2>
+      <button id="closeSettings" class="settings-close">&times;</button>
+    </div>
+
+    <div class="settings-body">
+
+      <!-- Perfil -->
+      <div>
+        <p class="settings-section-label">Mi perfil</p>
+        <div class="settings-profile-card">
+          <div class="settings-avatar-lg" id="settingsAvatar">?</div>
+          <div class="settings-user-details">
+            <span class="settings-user-name"  id="settingsName">—</span>
+            <span class="settings-user-email" id="settingsEmail">—</span>
+            <span class="settings-user-badge">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              Administrador
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Estadísticas rápidas -->
+      <div>
+        <p class="settings-section-label">Resumen</p>
+        <div class="settings-stats">
+          <div class="settings-stat-item">
+            <span class="settings-stat-value" id="settingsTotalAlumnos">—</span>
+            <span class="settings-stat-label">Alumnos</span>
+          </div>
+          <div class="settings-stat-item">
+            <span class="settings-stat-value" id="settingsTotalGrupos">—</span>
+            <span class="settings-stat-label">Grupos</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Apariencia -->
+      <div>
+        <p class="settings-section-label">Apariencia</p>
+        <div class="theme-options">
+
+          <button class="theme-btn" data-theme-val="system">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+            </svg>
+            Sistema
+          </button>
+
+          <button class="theme-btn" data-theme-val="light">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+            Claro
+          </button>
+
+          <button class="theme-btn" data-theme-val="dark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+            Oscuro
+          </button>
+
+        </div>
+      </div>
+
+    </div>
+  </aside>
+
+  <script src="js/settings.js"></script>
   <script src="js/app.js"></script>
+
+  <!-- Navbar avatar initial from username -->
+  <script>
+    (function() {
+      const interval = setInterval(function() {
+        const name = document.getElementById('usuarioNombre');
+        const avatar = document.getElementById('navbarAvatar');
+        if (name && avatar && name.textContent && name.textContent !== 'Cargando...') {
+          avatar.textContent = name.textContent.trim().charAt(0).toUpperCase();
+          clearInterval(interval);
+        }
+      }, 200);
+    })();
+  </script>
 </body>
 </html>

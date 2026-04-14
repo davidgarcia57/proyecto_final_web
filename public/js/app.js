@@ -11,6 +11,7 @@ let alumnoAEliminarId = null;
     return;
   }
   document.getElementById('usuarioNombre').textContent = data.usuario.nombre;
+  populateSettingsProfile(data.usuario);
   cargarAlumnos();
 })();
 
@@ -40,13 +41,19 @@ function renderTabla(lista) {
     tbody.innerHTML = '<tr><td colspan="6" class="empty-row">No hay alumnos registrados</td></tr>';
     return;
   }
+  const initial = n => escapar(n).trim().charAt(0).toUpperCase();
   tbody.innerHTML = lista.map(a => `
     <tr>
-      <td>${a.id}</td>
-      <td><strong>${escapar(a.nombre)}</strong></td>
-      <td><span class="badge">${escapar(a.grupo)}</span></td>
-      <td>${a.email ? escapar(a.email) : '<span style="color:#94a3b8">—</span>'}</td>
-      <td>${a.telefono ? escapar(a.telefono) : '<span style="color:#94a3b8">—</span>'}</td>
+      <td><span class="row-id">${a.id}</span></td>
+      <td>
+        <div class="row-name">
+          <div class="row-avatar">${initial(a.nombre)}</div>
+          <strong>${escapar(a.nombre)}</strong>
+        </div>
+      </td>
+      <td><span class="group-badge">${escapar(a.grupo)}</span></td>
+      <td>${a.email ? escapar(a.email) : '<span style="color:#b0bdd4">—</span>'}</td>
+      <td>${a.telefono ? escapar(a.telefono) : '<span style="color:#b0bdd4">—</span>'}</td>
       <td>
         <div class="actions-cell">
           <button class="btn-icon btn-edit"   onclick="abrirEditar(${a.id})">Editar</button>
@@ -62,6 +69,7 @@ function actualizarStats() {
   document.getElementById('totalAlumnos').textContent = alumnos.length;
   const grupos = new Set(alumnos.map(a => a.grupo));
   document.getElementById('totalGrupos').textContent = grupos.size;
+  updateSettingsStats(alumnos.length, grupos.size);
 }
 
 // ─── Búsqueda ─────────────────────────────────────────────────────────────────
