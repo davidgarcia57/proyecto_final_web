@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistema Escolar – Dashboard</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-brand">🎓 Sistema Escolar</div>
+    <div class="navbar-user">
+      <span id="usuarioNombre">Cargando...</span>
+      <button id="logoutBtn" class="btn btn-outline">Cerrar sesión</button>
+    </div>
+  </nav>
+
+  <!-- Main content -->
+  <main class="container">
+
+    <!-- Stats -->
+    <section class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-info">
+          <span id="totalAlumnos" class="stat-number">0</span>
+          <span class="stat-label">Alumnos registrados</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📚</div>
+        <div class="stat-info">
+          <span id="totalGrupos" class="stat-number">0</span>
+          <span class="stat-label">Grupos activos</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Alumnos section -->
+    <section class="section-card">
+      <div class="section-header">
+        <h2>Gestión de Alumnos</h2>
+        <button id="btnNuevoAlumno" class="btn btn-primary">+ Nuevo Alumno</button>
+      </div>
+
+      <!-- Buscador -->
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Buscar por nombre o grupo..." />
+      </div>
+
+      <!-- Tabla -->
+      <div class="table-wrapper">
+        <table id="tablaAlumnos">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nombre</th>
+              <th>Grupo</th>
+              <th>Email</th>
+              <th>Teléfono</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyAlumnos">
+            <tr><td colspan="6" class="loading-row">Cargando alumnos...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal Alumno -->
+  <div id="modalAlumno" class="modal hidden">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitulo">Nuevo Alumno</h3>
+        <button class="modal-close" id="cerrarModal">&times;</button>
+      </div>
+      <form id="formAlumno">
+        <input type="hidden" id="alumnoId" />
+        <div class="form-group">
+          <label for="alumnoNombre">Nombre <span class="required">*</span></label>
+          <input type="text" id="alumnoNombre" placeholder="Nombre completo" required />
+        </div>
+        <div class="form-group">
+          <label for="alumnoGrupo">Grupo <span class="required">*</span></label>
+          <input type="text" id="alumnoGrupo" placeholder="Ej: 3A, 2B" required />
+        </div>
+        <div class="form-group">
+          <label for="alumnoEmail">Email</label>
+          <input type="email" id="alumnoEmail" placeholder="correo@ejemplo.com" />
+        </div>
+        <div class="form-group">
+          <label for="alumnoTelefono">Teléfono</label>
+          <input type="text" id="alumnoTelefono" placeholder="Ej: 555-1234" />
+        </div>
+        <div id="formError" class="alert alert-error hidden"></div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" id="cancelarModal">Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="btnGuardar">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Confirmación Eliminar -->
+  <div id="modalEliminar" class="modal hidden">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-sm">
+      <div class="modal-header">
+        <h3>Confirmar eliminación</h3>
+        <button class="modal-close" id="cerrarEliminar">&times;</button>
+      </div>
+      <p class="confirm-text">¿Estás seguro de que deseas eliminar a <strong id="nombreEliminar"></strong>?</p>
+      <div class="modal-actions">
+        <button class="btn btn-outline" id="cancelarEliminar">Cancelar</button>
+        <button class="btn btn-danger" id="confirmarEliminar">Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast notificación -->
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

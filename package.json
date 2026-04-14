@@ -1,0 +1,19 @@
+{
+  "name": "sistema-escolar",
+  "version": "1.0.0",
+  "description": "Sistema de gestión escolar con sesiones y CRUD",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "mysql2": "^3.6.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}
