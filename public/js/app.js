@@ -1,201 +1,52 @@
-// ─── Estado global ───────────────────────────────────────────────────────────
-let alumnos = [];
-let alumnoAEliminarId = null;
+// ─── app.js — Orquestador principal ───────────────────────────────────────────
+// Principio O (Open/Closed): coordina módulos sin conocer su implementación.
+// Para añadir un nuevo módulo sólo se importa y se inicializa aquí, sin
+// modificar los módulos existentes.
 
-// ─── Verificar sesión al cargar ───────────────────────────────────────────────
-(async () => {
-  const res  = await fetch('/api/sesion');
-  const data = await res.json();
-  if (!data.autenticado) {
-    window.location.href = '/login.html';
-    return;
-  }
-  document.getElementById('usuarioNombre').textContent = data.usuario.nombre;
-  populateSettingsProfile(data.usuario);
-  cargarAlumnos();
-})();
-
-// ─── Logout ───────────────────────────────────────────────────────────────────
-document.getElementById('logoutBtn').addEventListener('click', async () => {
-  await fetch('/api/logout');
-  window.location.href = '/login.html';
-});
-
-// ─── Cargar alumnos ───────────────────────────────────────────────────────────
-async function cargarAlumnos() {
-  try {
-    const res = await fetch('/api/alumnos');
-    if (res.status === 401) { window.location.href = '/login.html'; return; }
-    alumnos = await res.json();
-    renderTabla(alumnos);
-    actualizarStats();
-  } catch {
-    mostrarToast('Error al cargar alumnos', 'error');
-  }
-}
-
-// ─── Renderizar tabla ─────────────────────────────────────────────────────────
-function renderTabla(lista) {
-  const tbody = document.getElementById('tbodyAlumnos');
-  if (lista.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6" class="empty-row">No hay alumnos registrados</td></tr>';
-    return;
-  }
-  const initial = n => escapar(n).trim().charAt(0).toUpperCase();
-  tbody.innerHTML = lista.map(a => `
-    <tr>
-      <td><span class="row-id">${a.id}</span></td>
-      <td>
-        <div class="row-name">
-          <div class="row-avatar">${initial(a.nombre)}</div>
-          <strong>${escapar(a.nombre)}</strong>
-        </div>
-      </td>
-      <td><span class="group-badge">${escapar(a.grupo)}</span></td>
-      <td>${a.email ? escapar(a.email) : '<span style="color:#b0bdd4">—</span>'}</td>
-      <td>${a.telefono ? escapar(a.telefono) : '<span style="color:#b0bdd4">—</span>'}</td>
-      <td>
-        <div class="actions-cell">
-          <button class="btn-icon btn-edit"   onclick="abrirEditar(${a.id})">Editar</button>
-          <button class="btn-icon btn-delete" onclick="confirmarEliminar(${a.id}, '${escapar(a.nombre)}')">Eliminar</button>
-        </div>
-      </td>
-    </tr>
-  `).join('');
-}
-
-// ─── Stats ────────────────────────────────────────────────────────────────────
-function actualizarStats() {
-  document.getElementById('totalAlumnos').textContent = alumnos.length;
-  const grupos = new Set(alumnos.map(a => a.grupo));
-  document.getElementById('totalGrupos').textContent = grupos.size;
-  updateSettingsStats(alumnos.length, grupos.size);
-}
-
-// ─── Búsqueda ─────────────────────────────────────────────────────────────────
-document.getElementById('searchInput').addEventListener('input', (e) => {
-  const q = e.target.value.toLowerCase();
-  const filtrados = alumnos.filter(a =>
-    a.nombre.toLowerCase().includes(q) || a.grupo.toLowerCase().includes(q)
-  );
-  renderTabla(filtrados);
-});
-
-// ─── Modal Alumno ─────────────────────────────────────────────────────────────
-function abrirModal(titulo = 'Nuevo Alumno') {
-  document.getElementById('modalTitulo').textContent = titulo;
-  document.getElementById('modalAlumno').classList.remove('hidden');
-  document.getElementById('formError').classList.add('hidden');
-}
-
-function cerrarModal() {
-  document.getElementById('modalAlumno').classList.add('hidden');
-  document.getElementById('formAlumno').reset();
-  document.getElementById('alumnoId').value = '';
-}
-
-document.getElementById('btnNuevoAlumno').addEventListener('click', () => {
-  abrirModal('Nuevo Alumno');
-});
-document.getElementById('cerrarModal').addEventListener('click', cerrarModal);
-document.getElementById('cancelarModal').addEventListener('click', cerrarModal);
-document.querySelector('#modalAlumno .modal-overlay').addEventListener('click', cerrarModal);
-
-// Abrir modal para editar
-async function abrirEditar(id) {
-  try {
-    const res  = await fetch(`/api/alumnos/${id}`);
-    const data = await res.json();
-    document.getElementById('alumnoId').value       = data.id;
-    document.getElementById('alumnoNombre').value   = data.nombre;
-    document.getElementById('alumnoGrupo').value    = data.grupo;
-    document.getElementById('alumnoEmail').value    = data.email || '';
-    document.getElementById('alumnoTelefono').value = data.telefono || '';
-    abrirModal('Editar Alumno');
-  } catch {
-    mostrarToast('Error al obtener datos del alumno', 'error');
-  }
-}
-
-// Guardar (crear o editar)
-document.getElementById('formAlumno').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const errorEl = document.getElementById('formError');
-  errorEl.classList.add('hidden');
-
-  const id       = document.getElementById('alumnoId').value;
-  const nombre   = document.getElementById('alumnoNombre').value.trim();
-  const grupo    = document.getElementById('alumnoGrupo').value.trim();
-  const email    = document.getElementById('alumnoEmail').value.trim();
-  const telefono = document.getElementById('alumnoTelefono').value.trim();
-
-  const url    = id ? `/api/alumnos/${id}` : '/api/alumnos';
-  const method = id ? 'PUT' : 'POST';
-
-  try {
-    const res  = await fetch(url, {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nombre, grupo, email, telefono })
-    });
-    const data = await res.json();
-
-    if (!res.ok) {
-      errorEl.textContent = data.error;
-      errorEl.classList.remove('hidden');
-      return;
-    }
-    cerrarModal();
-    mostrarToast(id ? 'Alumno actualizado' : 'Alumno creado', 'success');
-    cargarAlumnos();
-  } catch {
-    errorEl.textContent = 'Error de conexión';
-    errorEl.classList.remove('hidden');
-  }
-});
-
-// ─── Modal Eliminar ───────────────────────────────────────────────────────────
-function confirmarEliminar(id, nombre) {
-  alumnoAEliminarId = id;
-  document.getElementById('nombreEliminar').textContent = nombre;
-  document.getElementById('modalEliminar').classList.remove('hidden');
-}
-
-function cerrarEliminar() {
-  document.getElementById('modalEliminar').classList.add('hidden');
-  alumnoAEliminarId = null;
-}
-
-document.getElementById('cerrarEliminar').addEventListener('click', cerrarEliminar);
-document.getElementById('cancelarEliminar').addEventListener('click', cerrarEliminar);
-document.querySelector('#modalEliminar .modal-overlay').addEventListener('click', cerrarEliminar);
-
-document.getElementById('confirmarEliminar').addEventListener('click', async () => {
-  if (!alumnoAEliminarId) return;
-  try {
-    const res = await fetch(`/api/alumnos/${alumnoAEliminarId}`, { method: 'DELETE' });
-    if (!res.ok) { mostrarToast('Error al eliminar', 'error'); return; }
-    cerrarEliminar();
-    mostrarToast('Alumno eliminado', 'success');
-    cargarAlumnos();
-  } catch {
-    mostrarToast('Error de conexión', 'error');
-  }
-});
-
-// ─── Toast ────────────────────────────────────────────────────────────────────
+// ── Toast global (compartido entre módulos) ───────────────────────────────────
 function mostrarToast(mensaje, tipo = 'success') {
   const toast = document.getElementById('toast');
   toast.textContent = mensaje;
-  toast.className = `toast toast-${tipo}`;
-  setTimeout(() => toast.classList.add('hidden'), 3000);
+  toast.className   = `toast toast-${tipo}`;
+  toast.classList.remove('hidden');
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => toast.classList.add('hidden'), 3200);
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+// ── Helper de escape (compartido) ────────────────────────────────────────────
 function escapar(str) {
   return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
+
+// ── Arranque ──────────────────────────────────────────────────────────────────
+(async () => {
+  // 1. Verificar sesión
+  const sesRes = await Api.sesion();
+  if (!sesRes || !sesRes.data.autenticado) {
+    window.location.href = '/login.html';
+    return;
+  }
+
+  const usuario = sesRes.data.usuario;
+
+  // 2. Poblar navbar y settings con datos del usuario
+  const nombreEl = document.getElementById('usuarioNombre');
+  if (nombreEl) nombreEl.textContent = usuario.nombre;
+  populateSettingsProfile(usuario);
+
+  // Actualizar avatar en navbar
+  const avatarEl = document.getElementById('navbarAvatar');
+  if (avatarEl && usuario.nombre)
+    avatarEl.textContent = usuario.nombre.trim().charAt(0).toUpperCase();
+
+  // 3. Inicializar módulos (Principio O: sólo se llama init, sin acoplamientos)
+  AlumnosModule.init(mostrarToast);
+
+  // 4. Logout
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    await Api.logout();
+    window.location.href = '/login.html';
+  });
+})();

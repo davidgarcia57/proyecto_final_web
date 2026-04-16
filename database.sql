@@ -21,4 +21,29 @@ CREATE TABLE IF NOT EXISTS alumnos (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Usuario de prueba: admin@escuela.com / admin123
+-- ── Tabla de materias ──────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS materias (
+  id         INT AUTO_INCREMENT PRIMARY KEY,
+  nombre     VARCHAR(100) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ── Tabla de calificaciones ─────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS calificaciones (
+  id         INT AUTO_INCREMENT PRIMARY KEY,
+  alumno_id  INT            NOT NULL,
+  materia_id INT            NOT NULL,
+  calificacion DECIMAL(4,1) NOT NULL,
+  periodo    VARCHAR(20)    NOT NULL DEFAULT '2025-1',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (alumno_id)  REFERENCES alumnos(id)  ON DELETE CASCADE,
+  FOREIGN KEY (materia_id) REFERENCES materias(id) ON DELETE CASCADE
+);
+
+-- ── Materias de ejemplo ─────────────────────────────────────────────────────
+INSERT INTO materias (nombre) VALUES
+  ('Matemáticas'), ('Español'), ('Ciencias Naturales'),
+  ('Historia'), ('Inglés'), ('Educación Física'), ('Geografía'), ('Arte')
+ON DUPLICATE KEY UPDATE nombre = nombre;
+
+-- ── Usuario de prueba: admin@escuela.com / admin123 ─────────────────────────

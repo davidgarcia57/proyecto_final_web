@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduGest — Detalle de alumno</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ── Navbar ──────────────────────────────────────────────────────────── -->
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <img src="images/logo.png" alt="EduGest" class="navbar-logo" />
+      <div class="navbar-brand-dot"></div>
+    </div>
+    <div class="navbar-user">
+      <div class="navbar-user-info">
+        <div class="navbar-avatar" id="navbarAvatar">?</div>
+        <span class="navbar-user-name" id="usuarioNombre">Cargando...</span>
+      </div>
+      <button id="settingsBtn" class="settings-btn" title="Ajustes">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </button>
+      <button id="logoutBtn" class="btn btn-outline">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        Salir
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── Main ────────────────────────────────────────────────────────────── -->
+  <main class="container">
+
+    <!-- Breadcrumb / Back -->
+    <div class="page-header detail-page-header">
+      <a href="/index.html" class="back-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+        Volver al Dashboard
+      </a>
+    </div>
+
+    <!-- Hero card del alumno -->
+    <div class="alumno-hero" id="alumnoHero">
+      <div class="alumno-hero-avatar" id="heroAvatar">?</div>
+      <div class="alumno-hero-info">
+        <h1 id="heroNombre">Cargando...</h1>
+        <div class="alumno-hero-meta" id="heroMeta">
+          <span class="hero-skeleton">—</span>
+        </div>
+      </div>
+      <button class="btn btn-outline" id="btnEditarAlumno">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+        </svg>
+        Editar datos
+      </button>
+    </div>
+
+    <!-- ── Calificaciones ────────────────────────────────────────────────── -->
+    <section class="section-card">
+      <div class="section-header">
+        <div class="section-header-left">
+          <h2>Calificaciones</h2>
+          <span class="section-header-sub">Historial de notas y promedio del alumno</span>
+        </div>
+        <span class="promedio-chip" id="promedioChip" style="display:none">
+          Promedio: <strong id="promedioVal">—</strong>
+        </span>
+      </div>
+
+      <!-- Formulario rápido — siempre visible, sin modal -->
+      <div class="quick-form-bar">
+        <form id="formQuickCal" autocomplete="off">
+          <input type="hidden" id="qCalId" />
+          <div class="quick-form-fields">
+            <div class="quick-field">
+              <label for="qMateria">Materia</label>
+              <select id="qMateria" required>
+                <option value="">Seleccionar…</option>
+              </select>
+            </div>
+            <div class="quick-field quick-field-sm">
+              <label for="qCalificacion">Calificación</label>
+              <input type="number" id="qCalificacion" min="0" max="10" step="0.1"
+                     placeholder="0 – 10" required />
+            </div>
+            <div class="quick-field">
+              <label for="qPeriodo">Periodo</label>
+              <select id="qPeriodo" required>
+                <option value="2024-1">2024 — Sem. 1</option>
+                <option value="2024-2">2024 — Sem. 2</option>
+                <option value="2025-1" selected>2025 — Sem. 1</option>
+                <option value="2025-2">2025 — Sem. 2</option>
+                <option value="2026-1">2026 — Sem. 1</option>
+              </select>
+            </div>
+            <div class="quick-field quick-field-actions">
+              <button type="submit" class="btn btn-primary" id="btnGuardarQuick">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+                <span id="quickBtnLabel">Agregar</span>
+              </button>
+              <button type="button" class="btn btn-outline" id="btnCancelarQuick" style="display:none">
+                Cancelar
+              </button>
+            </div>
+          </div>
+          <div id="quickFormError" class="alert alert-error hidden"></div>
+        </form>
+      </div>
+
+      <!-- Tabla de calificaciones -->
+      <div class="table-wrapper">
+        <table id="tablaCalificaciones">
+          <thead>
+            <tr>
+              <th>Materia</th>
+              <th>Calificación</th>
+              <th>Periodo</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyCal">
+            <tr><td colspan="4" class="loading-row">Cargando calificaciones…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ── Modal editar datos del alumno ────────────────────────────────────── -->
+  <div id="modalEditarAlumno" class="modal hidden">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-header-icon">
+          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+          </svg>
+        </div>
+        <div class="modal-header-text">
+          <h3>Editar datos del alumno</h3>
+          <span class="modal-header-sub">Actualiza la información personal</span>
+        </div>
+        <button class="modal-close" id="cerrarModalEditar">&times;</button>
+      </div>
+      <form id="formEditarAlumno">
+        <input type="hidden" id="editAlumnoId" />
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editNombre">Nombre <span class="required">*</span></label>
+            <input type="text" id="editNombre" placeholder="Nombre completo" required />
+          </div>
+          <div class="form-group">
+            <label for="editGrupo">Grupo <span class="required">*</span></label>
+            <input type="text" id="editGrupo" placeholder="Ej: 3A, 2B" required />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editEmail">Email</label>
+            <input type="email" id="editEmail" placeholder="correo@ejemplo.com" />
+          </div>
+          <div class="form-group">
+            <label for="editTelefono">Teléfono</label>
+            <input type="text" id="editTelefono" placeholder="Ej: 555-1234" />
+          </div>
+        </div>
+        <div id="editFormError" class="alert alert-error hidden"></div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" id="cancelarModalEditar">Cancelar</button>
+          <button type="submit" class="btn btn-primary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+              <polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
+            </svg>
+            Guardar cambios
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- Settings overlay & panel -->
+  <div id="settingsOverlay" class="settings-overlay"></div>
+  <aside id="settingsPanel" class="settings-panel">
+    <div class="settings-header">
+      <h2>Ajustes</h2>
+      <button id="closeSettings" class="settings-close">&times;</button>
+    </div>
+    <div class="settings-body">
+      <div>
+        <p class="settings-section-label">Mi perfil</p>
+        <div class="settings-profile-card">
+          <div class="settings-avatar-lg" id="settingsAvatar">?</div>
+          <div class="settings-user-details">
+            <span class="settings-user-name"  id="settingsName">—</span>
+            <span class="settings-user-email" id="settingsEmail">—</span>
+            <span class="settings-user-badge">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              Administrador
+            </span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <p class="settings-section-label">Apariencia</p>
+        <div class="theme-options">
+          <button class="theme-btn" data-theme-val="system">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+            Sistema
+          </button>
+          <button class="theme-btn" data-theme-val="light">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            Claro
+          </button>
+          <button class="theme-btn" data-theme-val="dark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            Oscuro
+          </button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <script src="js/api.js"></script>
+  <script src="js/settings.js"></script>
+  <script src="js/alumno.js"></script>
+
+</body>
+</html>
