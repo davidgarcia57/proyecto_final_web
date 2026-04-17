@@ -32,6 +32,7 @@ function badgeClass(cal) {
 let alumnoId    = null;
 let materias    = [];
 let calActual   = []; // lista de calificaciones en pantalla
+let alumnoData  = {}; // datos del alumno activo (para exportar)
 
 // ── Leer ID de la URL ─────────────────────────────────────────────────────────
 function getAlumnoId() {
@@ -47,6 +48,7 @@ async function cargarAlumno() {
     return;
   }
   const a = r.data;
+  alumnoData = a; // guardar para exportar
   document.title = `EduGest — ${a.nombre}`;
 
   const inicial = a.nombre.trim().charAt(0).toUpperCase();
@@ -243,11 +245,198 @@ document.getElementById('formEditarAlumno').addEventListener('submit', async (e)
   cargarAlumno();
 });
 
-// ── Logout ────────────────────────────────────────────────────────────────────
-document.getElementById('logoutBtn').addEventListener('click', async () => {
-  await Api.logout();
-  window.location.href = '/login.html';
+// ── Exportar Boletín ─────────────────────────────────────────────────────────
+
+// Toggle dropdown
+document.getElementById('btnExportarBoletin').addEventListener('click', (e) => {
+  e.stopPropagation();
+  document.getElementById('exportMenu').classList.toggle('hidden');
 });
+document.addEventListener('click', () => {
+  document.getElementById('exportMenu').classList.add('hidden');
+});
+
+// ── PDF ──────────────────────────────────────────────────────────────────────
+document.getElementById('btnExportPDF').addEventListener('click', () => {
+  document.getElementById('exportMenu').classList.add('hidden');
+
+  if (!calActual.length) {
+    mostrarToast('No hay calificaciones para exportar', 'error');
+    return;
+  }
+  if (!window.jspdf) {
+    mostrarToast('PDF aún cargando, intenta en un momento', 'error');
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const W   = doc.internal.pageSize.getWidth();
+
+  // ── Cabecera ──────────────────────────────────────────────────────────────
+  // Barra superior indigo
+  doc.setFillColor(79, 70, 229);
+  doc.roundedRect(0, 0, W, 32, 0, 0, 'F');
+
+  doc.setTextColor(255, 255, 255);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(18);
+  doc.text('EduGest', 14, 13);
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9.5);
+  doc.text('Boletín Oficial de Calificaciones', 14, 21);
+
+  const fechaStr = new Date().toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' });
+  doc.setFontSize(8.5);
+  doc.text(fechaStr, W - 14, 21, { align: 'right' });
+
+  // ── Datos del alumno ──────────────────────────────────────────────────────
+  const a = alumnoData;
+  doc.setTextColor(30, 27, 75);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(15);
+  doc.text(a.nombre || '—', 14, 44);
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9.5);
+  doc.setTextColor(107, 114, 128);
+
+  const meta = [];
+  meta.push(`Grupo: ${a.grupo || '—'}`);
+  if (a.email)    meta.push(`Email: ${a.email}`);
+  if (a.telefono) meta.push(`Tel: ${a.telefono}`);
+  meta.push(`ID: #${alumnoId}`);
+
+  doc.text(meta.join('   ·   '), 14, 52);
+
+  // Línea divisora
+  doc.setDrawColor(199, 210, 254);
+  doc.setLineWidth(0.4);
+  doc.line(14, 57, W - 14, 57);
+
+  // ── Tabla de calificaciones ───────────────────────────────────────────────
+  const suma  = calActual.reduce((s, c) => s + parseFloat(c.calificacion), 0);
+  const prom  = (suma / calActual.length).toFixed(1);
+
+  function colorCalificacion(val) {
+    const v = parseFloat(val);
+    if (v >= 9)  return [22, 163, 74];
+    if (v >= 7)  return [30, 85, 197];
+    if (v >= 6)  return [161, 98, 7];
+    return [185, 28, 28];
+  }
+
+  doc.autoTable({
+    startY: 63,
+    head: [['Materia', 'Calificación', 'Periodo']],
+    body: calActual.map(c => [
+      c.materia,
+      parseFloat(c.calificacion).toFixed(1),
+      c.periodo
+    ]),
+    theme: 'plain',
+    styles: {
+      font: 'helvetica',
+      fontSize: 9.5,
+      cellPadding: { top: 4.5, right: 6, bottom: 4.5, left: 6 },
+      textColor: [30, 27, 75],
+      lineColor: [199, 210, 254],
+      lineWidth: 0.3,
+    },
+    headStyles: {
+      fillColor: [238, 242, 255],
+      textColor: [91, 82, 192],
+      fontStyle: 'bold',
+      fontSize: 8.5,
+      cellPadding: { top: 5, right: 6, bottom: 5, left: 6 },
+    },
+    alternateRowStyles: { fillColor: [248, 249, 255] },
+    columnStyles: {
+      0: { cellWidth: 'auto' },
+      1: { cellWidth: 38, halign: 'center', fontStyle: 'bold' },
+      2: { cellWidth: 38, halign: 'center' },
+    },
+    didDrawCell(data) {
+      // Colorear celda de calificación
+      if (data.section === 'body' && data.column.index === 1) {
+        const val   = parseFloat(data.cell.raw);
+        const [r,g,b] = colorCalificacion(val);
+        const cx = data.cell.x + data.cell.width / 2;
+        const cy = data.cell.y + data.cell.height / 2;
+        doc.setFillColor(r, g, b);
+        doc.roundedRect(cx - 10, cy - 4, 20, 8, 3, 3, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9);
+        doc.text(data.cell.raw.toString(), cx, cy + 0.8, { align: 'center' });
+        // Evitar que autoTable sobreimprima el texto
+        data.cell.text = [];
+      }
+    },
+    margin: { left: 14, right: 14 },
+  });
+
+  // ── Promedio general ──────────────────────────────────────────────────────
+  const finalY = doc.lastAutoTable.finalY + 8;
+  const [pr, pg, pb] = colorCalificacion(prom);
+
+  doc.setFillColor(238, 242, 255);
+  doc.roundedRect(14, finalY - 6, W - 28, 14, 3, 3, 'F');
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9.5);
+  doc.setTextColor(79, 70, 229);
+  doc.text('Promedio General', 20, finalY + 2);
+
+  doc.setFillColor(pr, pg, pb);
+  doc.roundedRect(W - 50, finalY - 4.5, 32, 11, 3, 3, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(10);
+  doc.text(prom, W - 34, finalY + 2.5, { align: 'center' });
+
+  // ── Pie de página ─────────────────────────────────────────────────────────
+  const pageH = doc.internal.pageSize.getHeight();
+  doc.setDrawColor(199, 210, 254);
+  doc.setLineWidth(0.3);
+  doc.line(14, pageH - 16, W - 14, pageH - 16);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(7.5);
+  doc.setTextColor(156, 163, 175);
+  doc.text('Documento generado automáticamente por EduGest', 14, pageH - 10);
+  doc.text(fechaStr, W - 14, pageH - 10, { align: 'right' });
+
+  // ── Guardar ───────────────────────────────────────────────────────────────
+  const nombreArchivo = `boletin_${(a.nombre || 'alumno').replace(/\s+/g, '_')}.pdf`;
+  doc.save(nombreArchivo);
+  mostrarToast('PDF generado correctamente', 'success');
+});
+
+// ── CSV ───────────────────────────────────────────────────────────────────────
+document.getElementById('btnExportCSV').addEventListener('click', () => {
+  document.getElementById('exportMenu').classList.add('hidden');
+  if (!calActual.length) {
+    mostrarToast('No hay calificaciones para exportar', 'error');
+    return;
+  }
+  window.location.href = `/api/calificaciones/alumno/${alumnoId}/export/csv`;
+  mostrarToast('Descargando CSV…', 'success');
+});
+
+// ── Sidebar toggle (mobile) ───────────────────────────────────────────────────
+(function initSidebar() {
+  const sidebar  = document.getElementById('sidebar');
+  const overlay  = document.getElementById('sidebarOverlay');
+  const toggle   = document.getElementById('sidebarToggle');
+  if (!sidebar || !toggle) return;
+
+  function openSidebar()  { sidebar.classList.add('open'); overlay.classList.add('open'); document.body.style.overflow = 'hidden'; }
+  function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('open'); document.body.style.overflow = ''; }
+
+  toggle.addEventListener('click', () => sidebar.classList.contains('open') ? closeSidebar() : openSidebar());
+  overlay.addEventListener('click', closeSidebar);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
+})();
 
 // ── Arranque ──────────────────────────────────────────────────────────────────
 (async () => {
@@ -257,12 +446,22 @@ document.getElementById('logoutBtn').addEventListener('click', async () => {
     window.location.href = '/login.html';
     return;
   }
+  document.body.classList.remove('app-loading');
 
   const usuario = sesRes.data.usuario;
-  document.getElementById('usuarioNombre').textContent = usuario.nombre;
   populateSettingsProfile(usuario);
-  const av = document.getElementById('navbarAvatar');
-  if (av) av.textContent = usuario.nombre.trim().charAt(0).toUpperCase();
+
+  // Topbar user info
+  const initial  = usuario.nombre.trim().charAt(0).toUpperCase();
+  const avatarEl = document.getElementById('topbarAvatar');
+  const nameEl   = document.getElementById('topbarName');
+  if (avatarEl) avatarEl.textContent = initial;
+  if (nameEl)   nameEl.textContent   = usuario.nombre;
+
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    await Api.logout();
+    window.location.href = '/login.html';
+  });
 
   // Obtener ID del alumno
   alumnoId = getAlumnoId();

@@ -96,9 +96,11 @@ const AlumnosModule = (() => {
 
   // ── Stats del dashboard ───────────────────────────────────────────────────
   function _actualizarStats() {
-    const grupos = new Set(_todos.map(a => a.grupo));
-    document.getElementById('totalAlumnos').textContent = _todos.length;
-    document.getElementById('totalGrupos').textContent  = grupos.size;
+    const grupos   = new Set(_todos.map(a => a.grupo));
+    const elTotal  = document.getElementById('totalAlumnos');
+    const elGrupos = document.getElementById('totalGrupos');
+    if (elTotal)  elTotal.textContent  = _todos.length;
+    if (elGrupos) elGrupos.textContent = grupos.size;
     updateSettingsStats(_todos.length, grupos.size);
 
     // Alumnos registrados este mes (calculado en cliente)

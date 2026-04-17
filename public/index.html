@@ -6,287 +6,182 @@
   <title>EduGest — Dashboard</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
-<body>
+<body class="app-loading">
 
-  <!-- ── Navbar ──────────────────────────────────────────────────────────── -->
-  <nav class="navbar">
-    <div class="navbar-brand">
-      <img src="images/logo.png" alt="EduGest" class="navbar-logo" />
-      <div class="navbar-brand-dot"></div>
-    </div>
-    <div class="navbar-user">
-      <div class="navbar-user-info">
-        <div class="navbar-avatar" id="navbarAvatar">?</div>
-        <span class="navbar-user-name" id="usuarioNombre">Cargando...</span>
-      </div>
-      <!-- Settings gear -->
-      <button id="settingsBtn" class="settings-btn" title="Ajustes">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="3"/>
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-        </svg>
-      </button>
-      <button id="logoutBtn" class="btn btn-outline">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
-        </svg>
-        Salir
-      </button>
-    </div>
-  </nav>
+  <div class="app-shell">
 
-  <!-- ── Main ────────────────────────────────────────────────────────────── -->
-  <main class="container">
+    <!-- ── Sidebar ─────────────────────────────────────────────────────────── -->
+    <aside class="sidebar" id="sidebar">
 
-    <!-- Page header -->
-    <div class="page-header">
-      <h1>Dashboard</h1>
-      <p>Gestión integral de alumnos, grupos y calificaciones</p>
-    </div>
-
-    <!-- Stats (4 tarjetas) -->
-    <section class="stats-grid stats-grid-4">
-
-      <!-- Total alumnos -->
-      <div class="stat-card stat-card-blue">
-        <div class="stat-icon">
-          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-            <circle cx="9" cy="7" r="4"/>
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-          </svg>
-        </div>
-        <div class="stat-info">
-          <span id="totalAlumnos" class="stat-number">0</span>
-          <span class="stat-label">Alumnos registrados</span>
-        </div>
+      <div class="sidebar-logo">
+        <img src="images/logo.png" alt="EduGest" />
+        <div class="sidebar-logo-dot"></div>
       </div>
 
-      <!-- Grupos activos -->
-      <div class="stat-card stat-card-orange">
-        <div class="stat-icon">
-          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
-            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
-          </svg>
-        </div>
-        <div class="stat-info">
-          <span id="totalGrupos" class="stat-number">0</span>
-          <span class="stat-label">Grupos activos</span>
-        </div>
-      </div>
+      <nav class="sidebar-nav">
+        <span class="sidebar-label">Menú principal</span>
 
-      <!-- Alumnos este mes -->
-      <div class="stat-card stat-card-teal">
-        <div class="stat-icon">
-          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-            <line x1="16" y1="2" x2="16" y2="6"/>
-            <line x1="8" y1="2" x2="8" y2="6"/>
-            <line x1="3" y1="10" x2="21" y2="10"/>
-          </svg>
-        </div>
-        <div class="stat-info">
-          <span id="alumnosEsteMes" class="stat-number">0</span>
-          <span class="stat-label">Nuevos este mes</span>
-        </div>
-      </div>
+        <a href="/index.html" class="sidebar-item active">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          Dashboard
+        </a>
 
-      <!-- Promedio general -->
-      <div class="stat-card stat-card-purple">
-        <div class="stat-icon">
-          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-          </svg>
-        </div>
-        <div class="stat-info">
-          <span id="promedioGeneral" class="stat-number">—</span>
-          <span class="stat-label">Promedio general</span>
-        </div>
-      </div>
+        <a href="/alumnos.html" class="sidebar-item">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Alumnos
+        </a>
 
-    </section>
+        <a href="/materias.html" class="sidebar-item">
+          <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          Materias
+        </a>
 
-    <!-- Alumnos section -->
-    <section class="section-card">
-      <div class="section-header">
-        <div class="section-header-left">
-          <h2>Gestión de Alumnos</h2>
-          <span class="section-header-sub">Consulta, agrega, edita y gestiona calificaciones</span>
-        </div>
-        <div class="section-header-actions">
-          <button id="btnExportCSV" class="btn btn-outline">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-              <polyline points="7 10 12 15 17 10"/>
-              <line x1="12" y1="15" x2="12" y2="3"/>
-            </svg>
-            Exportar CSV
+      </nav>
+
+    </aside>
+
+    <!-- Mobile overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- ── Page wrapper ────────────────────────────────────────────────────── -->
+    <div class="page-wrapper">
+
+      <!-- Topbar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="sidebar-toggle" id="sidebarToggle" aria-label="Abrir menú">
+            <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
-          <button id="btnNuevoAlumno" class="btn btn-primary">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-            </svg>
-            Nuevo Alumno
-          </button>
-        </div>
-      </div>
-
-      <!-- Search bar -->
-      <div class="search-bar">
-        <div class="search-input-wrap">
-          <svg class="search-icon" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-          </svg>
-          <input type="text" id="searchInput" placeholder="Buscar por nombre, grupo o email…" />
-        </div>
-        <span class="resultado-count" id="resultadoCount"></span>
-      </div>
-
-      <!-- Table -->
-      <div class="table-wrapper">
-        <table id="tablaAlumnos">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Alumno</th>
-              <th>Grupo</th>
-              <th>Email</th>
-              <th>Teléfono</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="tbodyAlumnos">
-            <tr><td colspan="6" class="loading-row">Cargando alumnos…</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Paginación -->
-      <div class="pagination" id="paginacion" style="display:none">
-        <button class="btn-page" id="btnPrevPage" disabled>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="15 18 9 12 15 6"/>
-          </svg>
-          Anterior
-        </button>
-        <span class="page-info" id="pageInfo">Página 1 de 1</span>
-        <button class="btn-page" id="btnNextPage">
-          Siguiente
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="9 18 15 12 9 6"/>
-          </svg>
-        </button>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- ── Modal Alumno ─────────────────────────────────────────────────────── -->
-  <div id="modalAlumno" class="modal hidden">
-    <div class="modal-overlay"></div>
-    <div class="modal-content">
-      <div class="modal-header">
-        <div class="modal-header-icon">
-          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-            <circle cx="12" cy="7" r="4"/>
-          </svg>
-        </div>
-        <div class="modal-header-text">
-          <h3 id="modalTitulo">Nuevo Alumno</h3>
-          <span class="modal-header-sub">Completa los datos del alumno</span>
-        </div>
-        <button class="modal-close" id="cerrarModal">&times;</button>
-      </div>
-      <form id="formAlumno">
-        <input type="hidden" id="alumnoId" />
-        <div class="form-row">
-          <div class="form-group">
-            <label for="alumnoNombre">Nombre <span class="required">*</span></label>
-            <input type="text" id="alumnoNombre" placeholder="Nombre completo" required />
-          </div>
-          <div class="form-group">
-            <label for="alumnoGrupo">Grupo <span class="required">*</span></label>
-            <input type="text" id="alumnoGrupo" placeholder="Ej: 3A, 2B" required />
+          <div class="topbar-brand">
+            <img src="images/logo.png" alt="EduGest" class="topbar-logo-img" />
+            <div class="topbar-brand-dot"></div>
           </div>
         </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="alumnoEmail">Email</label>
-            <input type="email" id="alumnoEmail" placeholder="correo@ejemplo.com" />
+        <div class="topbar-right">
+          <div class="topbar-user">
+            <div class="topbar-avatar" id="topbarAvatar">?</div>
+            <span class="topbar-user-name" id="topbarName">—</span>
           </div>
-          <div class="form-group">
-            <label for="alumnoTelefono">Teléfono</label>
-            <input type="text" id="alumnoTelefono" placeholder="Ej: 555-1234" />
-          </div>
-        </div>
-        <div id="formError" class="alert alert-error hidden"></div>
-        <div class="modal-actions">
-          <button type="button" class="btn btn-outline" id="cancelarModal">Cancelar</button>
-          <button type="submit" class="btn btn-primary" id="btnGuardar">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
-              <polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
-            </svg>
-            Guardar
+          <button class="topbar-icon-btn" id="settingsBtn" title="Ajustes">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </button>
+          <button class="topbar-icon-btn topbar-logout" id="logoutBtn" title="Cerrar sesión">
+            <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
           </button>
         </div>
-      </form>
-    </div>
-  </div>
+      </header>
 
-  <!-- ── Modal Confirmar Eliminar ─────────────────────────────────────────── -->
-  <div id="modalEliminar" class="modal hidden">
-    <div class="modal-overlay"></div>
-    <div class="modal-content modal-sm">
-      <div class="modal-header modal-header-danger">
-        <div class="modal-header-icon">
-          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="3 6 5 6 21 6"/>
-            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-            <path d="M10 11v6"/><path d="M14 11v6"/>
-            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
-          </svg>
+      <!-- Main content -->
+      <main class="container">
+
+        <div class="page-header">
+          <h1>Dashboard</h1>
+          <p>Bienvenido — gestión integral de alumnos, grupos y calificaciones</p>
         </div>
-        <div class="modal-header-text">
-          <h3>Confirmar eliminación</h3>
-          <span class="modal-header-sub">Esta acción no se puede deshacer</span>
-        </div>
-        <button class="modal-close" id="cerrarEliminar">&times;</button>
-      </div>
-      <div class="modal-body">
-        <p class="confirm-text">¿Estás seguro de que deseas eliminar a <strong id="nombreEliminar"></strong>? El registro y sus calificaciones serán eliminados permanentemente.</p>
-        <div class="modal-actions">
-          <button class="btn btn-outline" id="cancelarEliminar">Cancelar</button>
-          <button class="btn btn-danger" id="confirmarEliminar">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="3 6 5 6 21 6"/>
-              <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-            </svg>
-            Eliminar
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
+
+        <!-- Stats (4 tarjetas) -->
+        <section class="stats-grid stats-grid-4">
+
+          <div class="stat-card stat-card-blue">
+            <div class="stat-icon">
+              <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+            </div>
+            <div class="stat-info">
+              <span id="totalAlumnos" class="stat-number">0</span>
+              <span class="stat-label">Alumnos registrados</span>
+            </div>
+          </div>
+
+          <div class="stat-card stat-card-orange">
+            <div class="stat-icon">
+              <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+              </svg>
+            </div>
+            <div class="stat-info">
+              <span id="totalGrupos" class="stat-number">0</span>
+              <span class="stat-label">Grupos activos</span>
+            </div>
+          </div>
+
+          <div class="stat-card stat-card-teal">
+            <div class="stat-icon">
+              <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+            </div>
+            <div class="stat-info">
+              <span id="alumnosEsteMes" class="stat-number">0</span>
+              <span class="stat-label">Nuevos este mes</span>
+            </div>
+          </div>
+
+          <div class="stat-card stat-card-purple">
+            <div class="stat-icon">
+              <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+              </svg>
+            </div>
+            <div class="stat-info">
+              <span id="promedioGeneral" class="stat-number">—</span>
+              <span class="stat-label">Promedio general</span>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- Quick actions -->
+        <section class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); margin-bottom: 0;">
+
+          <a href="/alumnos.html" class="section-card" style="text-decoration:none; display:flex; align-items:center; gap:1.1rem; padding:1.4rem 1.6rem; cursor:pointer; transition:transform .18s, box-shadow .18s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+            <div style="width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,rgba(79,70,229,.14),rgba(99,102,241,.07));border:1.5px solid rgba(79,70,229,.20);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4F46E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div>
+              <div style="font-size:.9rem;font-weight:700;color:var(--text);">Gestionar Alumnos</div>
+              <div style="font-size:.78rem;color:var(--muted);margin-top:.15rem;">Ver, agregar y editar registros</div>
+            </div>
+            <svg style="margin-left:auto;flex-shrink:0;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+
+          <a href="/materias.html" class="section-card" style="text-decoration:none;display:flex;align-items:center;gap:1.1rem;padding:1.4rem 1.6rem;cursor:pointer;transition:transform .18s,box-shadow .18s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+            <div style="width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,rgba(109,40,217,.14),rgba(124,58,237,.07));border:1.5px solid rgba(109,40,217,.20);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6D28D9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            </div>
+            <div>
+              <div style="font-size:.9rem;font-weight:700;color:var(--text);">Gestionar Materias</div>
+              <div style="font-size:.78rem;color:var(--muted);margin-top:.15rem;">Ver, agregar y editar catálogo</div>
+            </div>
+            <svg style="margin-left:auto;flex-shrink:0;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+
+        </section>
+
+      </main>
+    </div><!-- /.page-wrapper -->
+
+  </div><!-- /.app-shell -->
 
   <!-- Toast -->
   <div id="toast" class="toast hidden"></div>
 
   <!-- ── Settings overlay & panel ─────────────────────────────────────────── -->
   <div id="settingsOverlay" class="settings-overlay"></div>
-
   <aside id="settingsPanel" class="settings-panel">
     <div class="settings-header">
       <h2>Ajustes</h2>
       <button id="closeSettings" class="settings-close">&times;</button>
     </div>
-
     <div class="settings-body">
-
-      <!-- Perfil -->
       <div>
         <p class="settings-section-label">Mi perfil</p>
         <div class="settings-profile-card">
@@ -301,8 +196,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Estadísticas rápidas -->
       <div>
         <p class="settings-section-label">Resumen</p>
         <div class="settings-stats">
@@ -316,42 +209,27 @@
           </div>
         </div>
       </div>
-
-      <!-- Apariencia -->
       <div>
         <p class="settings-section-label">Apariencia</p>
         <div class="theme-options">
-
           <button class="theme-btn" data-theme-val="system">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
             Sistema
           </button>
-
           <button class="theme-btn" data-theme-val="light">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
             Claro
           </button>
-
           <button class="theme-btn" data-theme-val="dark">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
             Oscuro
           </button>
-
         </div>
       </div>
-
     </div>
   </aside>
 
-  <!-- ── Scripts (orden importante: api → módulos → settings → app) ────────── -->
   <script src="js/api.js"></script>
-  <script src="js/alumnos.js"></script>
   <script src="js/settings.js"></script>
   <script src="js/app.js"></script>
 

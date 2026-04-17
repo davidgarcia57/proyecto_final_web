@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EduGest — Detalle de alumno</title>
+  <title>EduGest — Alumnos</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body class="app-loading">
@@ -74,122 +74,82 @@
       <!-- Main content -->
       <main class="container">
 
-        <!-- Hero card del alumno -->
-        <div class="alumno-hero" id="alumnoHero">
-          <div class="alumno-hero-avatar" id="heroAvatar">?</div>
-          <div class="alumno-hero-info">
-            <h1 id="heroNombre">Cargando...</h1>
-            <div class="alumno-hero-meta" id="heroMeta">
-              <span class="hero-skeleton">—</span>
-            </div>
-          </div>
-          <button class="btn btn-outline" id="btnEditarAlumno">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-            </svg>
-            Editar datos
-          </button>
+        <div class="page-header">
+          <h1>Gestión de Alumnos</h1>
+          <p>Consulta, agrega, edita y gestiona las calificaciones de los alumnos</p>
         </div>
 
-        <!-- ── Calificaciones ────────────────────────────────────────────────── -->
+        <!-- Alumnos section -->
         <section class="section-card">
           <div class="section-header">
             <div class="section-header-left">
-              <h2>Calificaciones</h2>
-              <span class="section-header-sub">Historial de notas y promedio del alumno</span>
+              <h2>Lista de Alumnos</h2>
+              <span class="section-header-sub">Todos los registros activos</span>
             </div>
             <div class="section-header-actions">
-              <span class="promedio-chip" id="promedioChip" style="display:none">
-                Promedio: <strong id="promedioVal">—</strong>
-              </span>
-              <!-- Export dropdown -->
-              <div class="export-dropdown" id="exportDropdown">
-                <button class="btn btn-outline" id="btnExportarBoletin" title="Exportar boletín de calificaciones">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                  </svg>
-                  Exportar
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:2px">
-                    <polyline points="6 9 12 15 18 9"/>
-                  </svg>
-                </button>
-                <div class="export-menu hidden" id="exportMenu">
-                  <button class="export-menu-item export-menu-item-pdf" id="btnExportPDF">
-                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                    Descargar PDF
-                  </button>
-                  <div class="export-menu-sep"></div>
-                  <button class="export-menu-item" id="btnExportCSV">
-                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>
-                    Descargar CSV
-                  </button>
-                </div>
-              </div>
+              <button id="btnExportCSV" class="btn btn-outline">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                Exportar CSV
+              </button>
+              <button id="btnNuevoAlumno" class="btn btn-primary">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+                Nuevo Alumno
+              </button>
             </div>
           </div>
 
-          <!-- Formulario rápido — siempre visible, sin modal -->
-          <div class="quick-form-bar">
-            <form id="formQuickCal" autocomplete="off">
-              <input type="hidden" id="qCalId" />
-              <div class="quick-form-fields">
-                <div class="quick-field">
-                  <label for="qMateria">Materia</label>
-                  <select id="qMateria" required>
-                    <option value="">Seleccionar…</option>
-                  </select>
-                </div>
-                <div class="quick-field quick-field-sm">
-                  <label for="qCalificacion">Calificación</label>
-                  <input type="number" id="qCalificacion" min="0" max="10" step="0.1"
-                         placeholder="0 – 10" required />
-                </div>
-                <div class="quick-field">
-                  <label for="qPeriodo">Periodo</label>
-                  <select id="qPeriodo" required>
-                    <option value="2024-1">2024 — Sem. 1</option>
-                    <option value="2024-2">2024 — Sem. 2</option>
-                    <option value="2025-1" selected>2025 — Sem. 1</option>
-                    <option value="2025-2">2025 — Sem. 2</option>
-                    <option value="2026-1">2026 — Sem. 1</option>
-                  </select>
-                </div>
-                <div class="quick-field quick-field-actions">
-                  <button type="submit" class="btn btn-primary" id="btnGuardarQuick">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
-                      <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-                    </svg>
-                    <span id="quickBtnLabel">Agregar</span>
-                  </button>
-                  <button type="button" class="btn btn-outline" id="btnCancelarQuick" style="display:none">
-                    Cancelar
-                  </button>
-                </div>
-              </div>
-              <div id="quickFormError" class="alert alert-error hidden"></div>
-            </form>
+          <!-- Search bar -->
+          <div class="search-bar">
+            <div class="search-input-wrap">
+              <svg class="search-icon" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <input type="text" id="searchInput" placeholder="Buscar por nombre, grupo o email…" />
+            </div>
+            <span class="resultado-count" id="resultadoCount"></span>
           </div>
 
-          <!-- Tabla de calificaciones -->
+          <!-- Table -->
           <div class="table-wrapper">
-            <table id="tablaCalificaciones">
+            <table id="tablaAlumnos">
               <thead>
                 <tr>
-                  <th>Materia</th>
-                  <th>Calificación</th>
-                  <th>Periodo</th>
+                  <th>#</th>
+                  <th>Alumno</th>
+                  <th>Grupo</th>
+                  <th>Email</th>
+                  <th>Teléfono</th>
                   <th>Acciones</th>
                 </tr>
               </thead>
-              <tbody id="tbodyCal">
-                <tr><td colspan="4" class="loading-row">Cargando calificaciones…</td></tr>
+              <tbody id="tbodyAlumnos">
+                <tr><td colspan="6" class="loading-row">Cargando alumnos…</td></tr>
               </tbody>
             </table>
           </div>
 
+          <!-- Paginación -->
+          <div class="pagination" id="paginacion" style="display:none">
+            <button class="btn-page" id="btnPrevPage" disabled>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"/>
+              </svg>
+              Anterior
+            </button>
+            <span class="page-info" id="pageInfo">Página 1 de 1</span>
+            <button class="btn-page" id="btnNextPage">
+              Siguiente
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </button>
+          </div>
         </section>
 
       </main>
@@ -197,63 +157,99 @@
 
   </div><!-- /.app-shell -->
 
-  <!-- ── Modal editar datos del alumno ────────────────────────────────────── -->
-  <div id="modalEditarAlumno" class="modal hidden">
+  <!-- ── Modal Alumno ─────────────────────────────────────────────────────── -->
+  <div id="modalAlumno" class="modal hidden">
     <div class="modal-overlay"></div>
     <div class="modal-content">
       <div class="modal-header">
         <div class="modal-header-icon">
           <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
           </svg>
         </div>
         <div class="modal-header-text">
-          <h3>Editar datos del alumno</h3>
-          <span class="modal-header-sub">Actualiza la información personal</span>
+          <h3 id="modalTitulo">Nuevo Alumno</h3>
+          <span class="modal-header-sub">Completa los datos del alumno</span>
         </div>
-        <button class="modal-close" id="cerrarModalEditar">&times;</button>
+        <button class="modal-close" id="cerrarModal">&times;</button>
       </div>
-      <form id="formEditarAlumno">
-        <input type="hidden" id="editAlumnoId" />
+      <form id="formAlumno">
+        <input type="hidden" id="alumnoId" />
         <div class="form-row">
           <div class="form-group">
-            <label for="editNombre">Nombre <span class="required">*</span></label>
-            <input type="text" id="editNombre" placeholder="Nombre completo" required />
+            <label for="alumnoNombre">Nombre <span class="required">*</span></label>
+            <input type="text" id="alumnoNombre" placeholder="Nombre completo" required />
           </div>
           <div class="form-group">
-            <label for="editGrupo">Grupo <span class="required">*</span></label>
-            <input type="text" id="editGrupo" placeholder="Ej: 3A, 2B" required />
+            <label for="alumnoGrupo">Grupo <span class="required">*</span></label>
+            <input type="text" id="alumnoGrupo" placeholder="Ej: 3A, 2B" required />
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label for="editEmail">Email</label>
-            <input type="email" id="editEmail" placeholder="correo@ejemplo.com" />
+            <label for="alumnoEmail">Email</label>
+            <input type="email" id="alumnoEmail" placeholder="correo@ejemplo.com" />
           </div>
           <div class="form-group">
-            <label for="editTelefono">Teléfono</label>
-            <input type="text" id="editTelefono" placeholder="Ej: 555-1234" />
+            <label for="alumnoTelefono">Teléfono</label>
+            <input type="text" id="alumnoTelefono" placeholder="Ej: 555-1234" />
           </div>
         </div>
-        <div id="editFormError" class="alert alert-error hidden"></div>
+        <div id="formError" class="alert alert-error hidden"></div>
         <div class="modal-actions">
-          <button type="button" class="btn btn-outline" id="cancelarModalEditar">Cancelar</button>
-          <button type="submit" class="btn btn-primary">
+          <button type="button" class="btn btn-outline" id="cancelarModal">Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="btnGuardar">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
               <polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
             </svg>
-            Guardar cambios
+            Guardar
           </button>
         </div>
       </form>
     </div>
   </div>
 
+  <!-- ── Modal Confirmar Eliminar ─────────────────────────────────────────── -->
+  <div id="modalEliminar" class="modal hidden">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-sm">
+      <div class="modal-header modal-header-danger">
+        <div class="modal-header-icon">
+          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+            <path d="M10 11v6"/><path d="M14 11v6"/>
+            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+          </svg>
+        </div>
+        <div class="modal-header-text">
+          <h3>Confirmar eliminación</h3>
+          <span class="modal-header-sub">Esta acción no se puede deshacer</span>
+        </div>
+        <button class="modal-close" id="cerrarEliminar">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="confirm-text">¿Estás seguro de que deseas eliminar a <strong id="nombreEliminar"></strong>? El registro y sus calificaciones serán eliminados permanentemente.</p>
+        <div class="modal-actions">
+          <button class="btn btn-outline" id="cancelarEliminar">Cancelar</button>
+          <button class="btn btn-danger" id="confirmarEliminar">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+            </svg>
+            Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast -->
   <div id="toast" class="toast hidden"></div>
 
-  <!-- Settings overlay & panel -->
+  <!-- ── Settings overlay & panel ─────────────────────────────────────────── -->
   <div id="settingsOverlay" class="settings-overlay"></div>
   <aside id="settingsPanel" class="settings-panel">
     <div class="settings-header">
@@ -272,6 +268,19 @@
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
               Administrador
             </span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <p class="settings-section-label">Resumen</p>
+        <div class="settings-stats">
+          <div class="settings-stat-item">
+            <span class="settings-stat-value" id="settingsTotalAlumnos">—</span>
+            <span class="settings-stat-label">Alumnos</span>
+          </div>
+          <div class="settings-stat-item">
+            <span class="settings-stat-value" id="settingsTotalGrupos">—</span>
+            <span class="settings-stat-label">Grupos</span>
           </div>
         </div>
       </div>
@@ -296,11 +305,9 @@
   </aside>
 
   <script src="js/api.js"></script>
+  <script src="js/alumnos.js"></script>
   <script src="js/settings.js"></script>
-  <!-- jsPDF para exportar boletín en PDF (sin dependencias npm) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-  <script src="js/alumno.js"></script>
+  <script src="js/alumnos-app.js"></script>
 
 </body>
 </html>

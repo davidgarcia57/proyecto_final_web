@@ -1,4 +1,4 @@
-// ─── app.js — Dashboard orchestrator ─────────────────────────────────────────
+// ─── alumnos-app.js — Orquestador de la página de alumnos ────────────────────
 
 // ── Toast global ──────────────────────────────────────────────────────────────
 function mostrarToast(mensaje, tipo = 'success') {
@@ -25,35 +25,6 @@ function mostrarToast(mensaje, tipo = 'success') {
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
 })();
 
-// ── Dashboard stats ───────────────────────────────────────────────────────────
-async function cargarStatsDashboard() {
-  try {
-    const r = await Api.alumnos.listar();
-    if (!r) return;
-    const todos  = r.data;
-    const grupos = new Set(todos.map(a => a.grupo));
-
-    document.getElementById('totalAlumnos').textContent = todos.length;
-    document.getElementById('totalGrupos').textContent  = grupos.size;
-    updateSettingsStats(todos.length, grupos.size);
-
-    const ahora   = new Date();
-    const esteMes = todos.filter(a => {
-      const d = new Date(a.created_at);
-      return d.getMonth() === ahora.getMonth() && d.getFullYear() === ahora.getFullYear();
-    }).length;
-    document.getElementById('alumnosEsteMes').textContent = esteMes;
-
-    const statsR = await Api.alumnos.stats();
-    if (statsR && statsR.ok) {
-      const el = document.getElementById('promedioGeneral');
-      if (el) el.textContent = statsR.data.promedioGeneral !== null ? statsR.data.promedioGeneral : '—';
-    }
-  } catch {
-    mostrarToast('Error al cargar estadísticas', 'error');
-  }
-}
-
 // ── Arranque ──────────────────────────────────────────────────────────────────
 (async () => {
   const sesRes = await Api.sesion();
@@ -67,13 +38,13 @@ async function cargarStatsDashboard() {
   populateSettingsProfile(usuario);
 
   // Topbar user info
-  const initial = usuario.nombre.trim().charAt(0).toUpperCase();
+  const initial  = usuario.nombre.trim().charAt(0).toUpperCase();
   const avatarEl = document.getElementById('topbarAvatar');
   const nameEl   = document.getElementById('topbarName');
   if (avatarEl) avatarEl.textContent = initial;
   if (nameEl)   nameEl.textContent   = usuario.nombre;
 
-  cargarStatsDashboard();
+  AlumnosModule.init(mostrarToast);
 
   document.getElementById('logoutBtn').addEventListener('click', async () => {
     await Api.logout();

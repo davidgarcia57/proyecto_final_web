@@ -37,7 +37,11 @@ const Api = (() => {
 
   // ── Materias ──────────────────────────────────────────────────────────────
   const materias = {
-    listar: () => request('GET', '/api/materias'),
+    listar:     ()         => request('GET',    '/api/materias'),
+    obtener:    (id)       => request('GET',    `/api/materias/${id}`),
+    crear:      (body)     => request('POST',   '/api/materias', body),
+    actualizar: (id, body) => request('PUT',    `/api/materias/${id}`, body),
+    eliminar:   (id)       => request('DELETE', `/api/materias/${id}`),
   };
 
   // ── Calificaciones ────────────────────────────────────────────────────────
