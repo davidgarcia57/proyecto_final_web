@@ -31,6 +31,21 @@ router.get('/stats', (req, res) => {
   });
 });
 
+// GET /api/servicios/propios — servicios del artista autenticado
+router.get('/propios', requireAuth, (req, res) => {
+  const artista_id = req.session.usuario.id;
+  db.query(
+    `SELECT s.*, u.nombre AS artista_nombre
+     FROM servicios s JOIN usuarios u ON u.id = s.artista_id
+     WHERE s.artista_id = ? ORDER BY s.id DESC`,
+    [artista_id],
+    (err, results) => {
+      if (err) return res.status(500).json({ error: 'Error al obtener servicios' });
+      res.json(results);
+    }
+  );
+});
+
 // GET /api/servicios — publico
 router.get('/', (req, res) => {
   const q = `

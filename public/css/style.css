@@ -667,7 +667,7 @@ body.app-loading .app-shell { opacity: 0; }
 
 .services-grid {
   display:               grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: 1fr;
   gap:                   1.1rem;
 }
 
@@ -2063,6 +2063,39 @@ select.form-control   { cursor: pointer; }
   .landing-nav { padding: 0 1rem; }
 
   .hero-inner { padding: 1.5rem 1rem 2rem; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ROLE BADGES EN TOPBAR
+═══════════════════════════════════════════════════════════════════════════ */
+.role-badge-topbar {
+  font-family:    var(--font-mono);
+  font-size:      0.65rem;
+  font-weight:    700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding:        0.2rem 0.55rem;
+  border-radius:  2px;
+  border:         1px solid currentColor;
+  flex-shrink:    0;
+}
+
+.role-artista  { color: var(--cyan);  background: var(--cyan-dim);   border-color: var(--cyan); }
+.role-comprador{ color: var(--rose);  background: var(--rose-dim);   border-color: var(--rose); }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MARKETPLACE GRID — BREAKPOINTS EXPLÍCITOS
+═══════════════════════════════════════════════════════════════════════════ */
+@media (min-width: 480px) {
+  .services-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 900px) {
+  .services-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (min-width: 1280px) {
+  .services-grid { grid-template-columns: repeat(4, 1fr); }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════

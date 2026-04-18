@@ -1,9 +1,23 @@
 // ─── login.js ─────────────────────────────────────────────────────────────────
 
+function redirectByRole(rol) {
+  window.location.href = rol === 'artista' ? '/artista-dashboard.html' : '/comprador-dashboard.html';
+}
+
 // Redirigir si ya hay sesion activa
 fetch('/api/sesion')
   .then(r => r.json())
-  .then(data => { if (data.autenticado) window.location.href = '/'; });
+  .then(data => { if (data.autenticado) redirectByRole(data.usuario.rol); });
+
+// Activar tab via hash (ej. /login.html#registro)
+if (window.location.hash === '#registro') {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+  const regBtn  = document.querySelector('.tab-btn[data-tab="registro"]');
+  const regForm = document.getElementById('registroForm');
+  if (regBtn)  regBtn.classList.add('active');
+  if (regForm) regForm.classList.add('active');
+}
 
 // Tabs
 document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -49,7 +63,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
       errorEl.textContent = data.error;
       errorEl.classList.remove('hidden');
     } else {
-      window.location.href = '/';
+      redirectByRole(data.usuario.rol);
     }
   } catch {
     errorEl.textContent = 'Error de conexion con el servidor';
@@ -91,12 +105,12 @@ document.getElementById('registroForm').addEventListener('submit', async (e) => 
       msgEl.textContent = data.error;
       msgEl.classList.add('alert-error');
     } else {
-      msgEl.textContent = 'Cuenta creada correctamente. Ya puedes iniciar sesion.';
+      msgEl.textContent = 'Cuenta creada. Ya puedes iniciar sesion.';
       msgEl.classList.add('alert-success');
       document.getElementById('registroForm').reset();
       rolSeleccionado = 'comprador';
       document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
-      document.querySelector('.role-btn[data-rol="comprador"]').classList.add('active');
+      document.querySelector('.role-btn[data-rol="comprador"]')?.classList.add('active');
     }
     msgEl.classList.remove('hidden');
   } catch {

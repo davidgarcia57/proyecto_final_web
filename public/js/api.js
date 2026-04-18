@@ -40,6 +40,7 @@ const Api = (() => {
     stats:      ()         => request('GET',    '/api/servicios/stats'),
     listar:     ()         => publicRequest('GET', '/api/servicios'),
     obtener:    (id)       => publicRequest('GET', `/api/servicios/${id}`),
+    propios:    ()         => request('GET',    '/api/servicios/propios'),
     crear:      (body)     => request('POST',   '/api/servicios', body),
     actualizar: (id, body) => request('PUT',    `/api/servicios/${id}`, body),
     eliminar:   (id)       => request('DELETE', `/api/servicios/${id}`),
@@ -52,10 +53,12 @@ const Api = (() => {
 
   // ── Pedidos ───────────────────────────────────────────────────────────────
   const pedidos = {
-    listar:     ()         => request('GET',    '/api/pedidos'),
-    crear:      (body)     => request('POST',   '/api/pedidos', body),
-    actualizar: (id, body) => request('PUT',    `/api/pedidos/${id}`, body),
-    eliminar:   (id)       => request('DELETE', `/api/pedidos/${id}`),
+    listar:    ()         => request('GET',    '/api/pedidos'),
+    ventas:    ()         => request('GET',    '/api/pedidos/mis-ventas'),
+    compras:   ()         => request('GET',    '/api/pedidos/mis-compras'),
+    crear:     (body)     => request('POST',   '/api/pedidos', body),
+    actualizar:(id, body) => request('PUT',    `/api/pedidos/${id}`, body),
+    eliminar:  (id)       => request('DELETE', `/api/pedidos/${id}`),
   };
 
   // ── Noticias (Vallecardo) ─────────────────────────────────────────────────

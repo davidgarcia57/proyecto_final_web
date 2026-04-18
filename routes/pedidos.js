@@ -3,6 +3,40 @@ const express = require('express');
 const router  = express.Router();
 const db      = require('../db');
 
+// GET /api/pedidos/mis-ventas — pedidos de los servicios del artista autenticado
+router.get('/mis-ventas', (req, res) => {
+  const artista_id = req.session.usuario.id;
+  const q = `
+    SELECT p.*, s.titulo AS servicio_titulo, u.nombre AS comprador_nombre
+    FROM pedidos p
+    JOIN servicios s ON s.id = p.servicio_id
+    JOIN usuarios  u ON u.id = p.comprador_id
+    WHERE s.artista_id = ?
+    ORDER BY p.id DESC
+  `;
+  db.query(q, [artista_id], (err, results) => {
+    if (err) return res.status(500).json({ error: 'Error al obtener ventas' });
+    res.json(results);
+  });
+});
+
+// GET /api/pedidos/mis-compras — pedidos del comprador autenticado
+router.get('/mis-compras', (req, res) => {
+  const comprador_id = req.session.usuario.id;
+  const q = `
+    SELECT p.*, s.titulo AS servicio_titulo, u.nombre AS artista_nombre
+    FROM pedidos p
+    JOIN servicios s ON s.id = p.servicio_id
+    JOIN usuarios  u ON u.id = s.artista_id
+    WHERE p.comprador_id = ?
+    ORDER BY p.id DESC
+  `;
+  db.query(q, [comprador_id], (err, results) => {
+    if (err) return res.status(500).json({ error: 'Error al obtener compras' });
+    res.json(results);
+  });
+});
+
 // GET /api/pedidos
 router.get('/', (req, res) => {
   const q = `
