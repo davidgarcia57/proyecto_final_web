@@ -1,5 +1,4 @@
 // ─── routes/auth.js ───────────────────────────────────────────────────────────
-// Responsabilidad única: rutas de autenticación (SOLID - S)
 const express = require('express');
 const bcrypt  = require('bcrypt');
 const router  = express.Router();
@@ -8,14 +7,16 @@ const db      = require('../db');
 // Registro
 router.post('/registro', async (req, res) => {
   try {
-    const { nombre, email, password } = req.body;
+    const { nombre, email, password, rol } = req.body;
     if (!nombre || !email || !password)
       return res.status(400).json({ error: 'Todos los campos son obligatorios' });
 
+    const rolFinal = ['artista', 'comprador'].includes(rol) ? rol : 'comprador';
     const hash = await bcrypt.hash(password, 10);
+
     db.query(
-      'INSERT INTO usuarios (nombre, email, password) VALUES (?, ?, ?)',
-      [nombre, email, hash],
+      'INSERT INTO usuarios (nombre, email, password, rol) VALUES (?, ?, ?, ?)',
+      [nombre, email, hash, rolFinal],
       (err) => {
         if (err) {
           if (err.code === 'ER_DUP_ENTRY')
@@ -46,7 +47,12 @@ router.post('/login', (req, res) => {
     if (!match)
       return res.status(401).json({ error: 'Contraseña incorrecta' });
 
-    req.session.usuario = { id: usuario.id, nombre: usuario.nombre, email: usuario.email };
+    req.session.usuario = {
+      id:     usuario.id,
+      nombre: usuario.nombre,
+      email:  usuario.email,
+      rol:    usuario.rol
+    };
     res.json({ mensaje: 'Login correcto', usuario: req.session.usuario });
   });
 });

@@ -1,6 +1,5 @@
-// ─── app.js — Dashboard orchestrator ─────────────────────────────────────────
+// ─── app.js — Orquestador del dashboard ──────────────────────────────────────
 
-// ── Toast global ──────────────────────────────────────────────────────────────
 function mostrarToast(mensaje, tipo = 'success') {
   const toast = document.getElementById('toast');
   toast.textContent = mensaje;
@@ -10,70 +9,72 @@ function mostrarToast(mensaje, tipo = 'success') {
   toast._timer = setTimeout(() => toast.classList.add('hidden'), 3200);
 }
 
-// ── Sidebar toggle (mobile) ───────────────────────────────────────────────────
+// Sidebar toggle (movil)
 (function initSidebar() {
-  const sidebar  = document.getElementById('sidebar');
-  const overlay  = document.getElementById('sidebarOverlay');
-  const toggle   = document.getElementById('sidebarToggle');
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  const toggle  = document.getElementById('sidebarToggle');
   if (!sidebar || !toggle) return;
 
-  function openSidebar()  { sidebar.classList.add('open'); overlay.classList.add('open'); document.body.style.overflow = 'hidden'; }
-  function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('open'); document.body.style.overflow = ''; }
+  function openSidebar()  {
+    sidebar.classList.add('open');
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
 
-  toggle.addEventListener('click', () => sidebar.classList.contains('open') ? closeSidebar() : openSidebar());
+  function closeSidebar() {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  toggle.addEventListener('click', () =>
+    sidebar.classList.contains('open') ? closeSidebar() : openSidebar()
+  );
   overlay.addEventListener('click', closeSidebar);
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
 })();
 
-// ── Dashboard stats ───────────────────────────────────────────────────────────
-async function cargarStatsDashboard() {
+// Cargar estadisticas del dashboard
+async function cargarStats() {
   try {
-    const r = await Api.alumnos.listar();
-    if (!r) return;
-    const todos  = r.data;
-    const grupos = new Set(todos.map(a => a.grupo));
+    const r = await Api.servicios.stats();
+    if (!r || !r.ok) return;
 
-    document.getElementById('totalAlumnos').textContent = todos.length;
-    document.getElementById('totalGrupos').textContent  = grupos.size;
-    updateSettingsStats(todos.length, grupos.size);
+    const { totalServicios, totalArtistas, totalPedidos } = r.data;
 
-    const ahora   = new Date();
-    const esteMes = todos.filter(a => {
-      const d = new Date(a.created_at);
-      return d.getMonth() === ahora.getMonth() && d.getFullYear() === ahora.getFullYear();
-    }).length;
-    document.getElementById('alumnosEsteMes').textContent = esteMes;
+    const elServ  = document.getElementById('totalServicios');
+    const elPed   = document.getElementById('totalPedidos');
+    const elArt   = document.getElementById('totalArtistas');
 
-    const statsR = await Api.alumnos.stats();
-    if (statsR && statsR.ok) {
-      const el = document.getElementById('promedioGeneral');
-      if (el) el.textContent = statsR.data.promedioGeneral !== null ? statsR.data.promedioGeneral : '—';
-    }
+    if (elServ) elServ.textContent = totalServicios ?? 0;
+    if (elPed)  elPed.textContent  = totalPedidos   ?? 0;
+    if (elArt)  elArt.textContent  = totalArtistas  ?? 0;
   } catch {
-    mostrarToast('Error al cargar estadísticas', 'error');
+    mostrarToast('Error al cargar estadisticas', 'error');
   }
 }
 
-// ── Arranque ──────────────────────────────────────────────────────────────────
+// Arranque
 (async () => {
   const sesRes = await Api.sesion();
   if (!sesRes || !sesRes.data.autenticado) {
     window.location.href = '/login.html';
     return;
   }
+
   document.body.classList.remove('app-loading');
 
   const usuario = sesRes.data.usuario;
   populateSettingsProfile(usuario);
 
-  // Topbar user info
-  const initial = usuario.nombre.trim().charAt(0).toUpperCase();
+  const initial  = usuario.nombre.trim().charAt(0).toUpperCase();
   const avatarEl = document.getElementById('topbarAvatar');
   const nameEl   = document.getElementById('topbarName');
   if (avatarEl) avatarEl.textContent = initial;
   if (nameEl)   nameEl.textContent   = usuario.nombre;
 
-  cargarStatsDashboard();
+  cargarStats();
 
   document.getElementById('logoutBtn').addEventListener('click', async () => {
     await Api.logout();

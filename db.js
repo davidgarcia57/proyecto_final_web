@@ -1,10 +1,10 @@
 const mysql = require('mysql2');
 
 const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
+  host:     'localhost',
+  user:     'root',
   password: '',
-  database: 'escuela'
+  database: 'forge_pixel'
 });
 
 db.connect(err => {
@@ -12,7 +12,7 @@ db.connect(err => {
     console.error('Error de conexión a MySQL:', err);
     return;
   }
-  console.log('Conectado a MySQL');
+  console.log('Conectado a MySQL — forge_pixel');
 });
 
 module.exports = db;

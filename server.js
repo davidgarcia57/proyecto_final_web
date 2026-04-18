@@ -1,14 +1,13 @@
 // ─── server.js ────────────────────────────────────────────────────────────────
-// Punto de entrada. Monta routers separados por dominio (SOLID - O, S).
-// Abierto para agregar nuevos routers sin modificar los existentes.
 const express = require('express');
 const session = require('express-session');
 const path    = require('path');
 
-const authRoutes           = require('./routes/auth');
-const alumnosRoutes        = require('./routes/alumnos');
-const materiasRoutes       = require('./routes/materias');
-const calificacionesRoutes = require('./routes/calificaciones');
+const authRoutes      = require('./routes/auth');
+const serviciosRoutes = require('./routes/servicios');  // GET public, POST/PUT/DELETE protegidos internamente
+const pedidosRoutes   = require('./routes/pedidos');
+const noticiasRoutes  = require('./routes/noticias');
+const artistasRoutes  = require('./routes/artistas');   // perfil publico
 
 const app = express();
 
@@ -17,26 +16,27 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
-  secret: 'clave_secreta_escuela_2024',
+  secret: 'forge_pixel_secret_2025',
   resave: false,
   saveUninitialized: false
 }));
 
-// ── Middleware de autenticación ───────────────────────────────────────────────
+// ── Middleware de autenticacion ───────────────────────────────────────────────
 function requireAuth(req, res, next) {
   if (!req.session.usuario)
     return res.status(401).json({ error: 'No autorizado' });
   next();
 }
 
-// ── Montaje de routers ────────────────────────────────────────────────────────
-app.use('/api',                   authRoutes);
-app.use('/api/alumnos',           requireAuth, alumnosRoutes);
-app.use('/api/materias',          requireAuth, materiasRoutes);
-app.use('/api/calificaciones',    requireAuth, calificacionesRoutes);
+// ── Rutas ─────────────────────────────────────────────────────────────────────
+app.use('/api',           authRoutes);
+app.use('/api/servicios', serviciosRoutes);          // GETs publicos, writes verifican auth internamente
+app.use('/api/artistas',  artistasRoutes);           // publico
+app.use('/api/pedidos',   requireAuth, pedidosRoutes);
+app.use('/api/noticias',  requireAuth, noticiasRoutes);
 
 // ── Inicio del servidor ───────────────────────────────────────────────────────
 const PORT = 3000;
 app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
+  console.log(`Forge & Pixel corriendo en http://localhost:${PORT}`);
 });

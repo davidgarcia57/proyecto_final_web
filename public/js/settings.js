@@ -1,9 +1,6 @@
-// ─── EduGest Settings — Theme & Panel ────────────────────────────────────────
-// Runs BEFORE app.js. Applies saved theme immediately to avoid flash.
+// ─── settings.js — Tema y panel de ajustes ────────────────────────────────────
+const THEME_KEY = 'forgepixel-theme';
 
-const THEME_KEY = 'edugest-theme';
-
-// ── Theme helpers ─────────────────────────────────────────────────────────────
 function getSystemPref() {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
@@ -13,57 +10,52 @@ function applyTheme(preference) {
   document.documentElement.setAttribute('data-theme', resolved);
   localStorage.setItem(THEME_KEY, preference);
 
-  // Sync button states
   document.querySelectorAll('.theme-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.themeVal === preference);
   });
 }
 
-// Apply immediately (before DOM is ready) to prevent flash
+// Aplicar tema antes de que el DOM este listo para evitar flash
 (function () {
-  const saved = localStorage.getItem(THEME_KEY) || 'system';
+  const saved    = localStorage.getItem(THEME_KEY) || 'dark';
   const resolved = saved === 'system' ? getSystemPref() : saved;
   document.documentElement.setAttribute('data-theme', resolved);
 })();
 
-// Re-sync buttons and listen for system changes once DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
 
-  // Sync button active state on load
-  const saved = localStorage.getItem(THEME_KEY) || 'system';
+  const saved = localStorage.getItem(THEME_KEY) || 'dark';
   document.querySelectorAll('.theme-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.themeVal === saved);
   });
 
-  // Theme button clicks
   document.querySelectorAll('.theme-btn').forEach(btn => {
     btn.addEventListener('click', () => applyTheme(btn.dataset.themeVal));
   });
 
-  // React to system theme changes (only if preference is "system")
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-    if ((localStorage.getItem(THEME_KEY) || 'system') === 'system') {
+    if ((localStorage.getItem(THEME_KEY) || 'dark') === 'system') {
       applyTheme('system');
     }
   });
 
-  // ── Settings Panel ─────────────────────────────────────────────────────────
-  const panel   = document.getElementById('settingsPanel');
-  const overlay = document.getElementById('settingsOverlay');
-  const gearBtn = document.getElementById('settingsBtn');
+  // ── Panel de ajustes ─────────────────────────────────────────────────────
+  const panel    = document.getElementById('settingsPanel');
+  const overlay  = document.getElementById('settingsOverlay');
+  const gearBtn  = document.getElementById('settingsBtn');
   const closeBtn = document.getElementById('closeSettings');
+
+  if (!panel) return;
 
   function openPanel() {
     panel.classList.add('open');
     overlay.classList.add('open');
-    gearBtn.classList.add('open');
     document.body.style.overflow = 'hidden';
   }
 
   function closePanel() {
     panel.classList.remove('open');
     overlay.classList.remove('open');
-    gearBtn.classList.remove('open');
     document.body.style.overflow = '';
   }
 
@@ -71,13 +63,12 @@ document.addEventListener('DOMContentLoaded', () => {
   closeBtn.addEventListener('click', closePanel);
   overlay.addEventListener('click', closePanel);
 
-  // Close on Escape
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && panel.classList.contains('open')) closePanel();
   });
 });
 
-// ── Public: populate profile info (called from app.js after session loads) ───
+// ── Funciones publicas para poblar perfil ─────────────────────────────────────
 function populateSettingsProfile(usuario) {
   const initial = usuario.nombre.trim().charAt(0).toUpperCase();
 
@@ -88,12 +79,4 @@ function populateSettingsProfile(usuario) {
   if (avatarEl) avatarEl.textContent = initial;
   if (nameEl)   nameEl.textContent   = usuario.nombre;
   if (emailEl)  emailEl.textContent  = usuario.email || '—';
-}
-
-// ── Public: update quick stats in settings panel ──────────────────────────────
-function updateSettingsStats(totalAlumnos, totalGrupos) {
-  const a = document.getElementById('settingsTotalAlumnos');
-  const g = document.getElementById('settingsTotalGrupos');
-  if (a) a.textContent = totalAlumnos;
-  if (g) g.textContent = totalGrupos;
 }

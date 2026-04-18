@@ -3,60 +3,77 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EduGest — Iniciar Sesión</title>
+  <title>Forge &amp; Pixel — Acceso</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body class="auth-page">
 
-  <!-- Background texture layer -->
-  <div class="auth-dots"></div>
-
   <div class="auth-container">
     <div class="auth-card">
 
-      <!-- Header -->
       <div class="auth-header">
-        <div class="auth-logo">
-          <img src="images/logo.png" alt="EduGest" />
+        <div class="auth-brand">
+          <span class="brand-forge">FORGE</span>
+          <span class="brand-amp"> &amp; </span>
+          <span class="brand-pixel">PIXEL</span>
         </div>
-        <p>Innovación Escolar y Gestión</p>
+        <p class="auth-subtitle">Marketplace de Pixel Art</p>
       </div>
 
-      <!-- Tabs -->
       <div class="auth-tabs">
-        <button class="tab-btn active" data-tab="login">Iniciar Sesión</button>
+        <button class="tab-btn active" data-tab="login">Iniciar Sesion</button>
         <button class="tab-btn" data-tab="registro">Crear Cuenta</button>
       </div>
 
-      <!-- Login Form -->
+      <!-- Formulario de inicio de sesion -->
       <form id="loginForm" class="auth-form active">
         <div class="form-group">
-          <label for="loginEmail">Correo electrónico</label>
-          <input type="email" id="loginEmail" placeholder="correo@ejemplo.com" required autocomplete="email" />
+          <label for="loginEmail">Correo electronico</label>
+          <input type="email" id="loginEmail" class="form-control"
+            placeholder="correo@ejemplo.com" required autocomplete="email" />
         </div>
         <div class="form-group">
-          <label for="loginPassword">Contraseña</label>
-          <input type="password" id="loginPassword" placeholder="••••••••" required autocomplete="current-password" />
+          <label for="loginPassword">Contrasena</label>
+          <input type="password" id="loginPassword" class="form-control"
+            placeholder="••••••••" required autocomplete="current-password" />
         </div>
-        <button type="submit" class="btn btn-primary btn-full">Iniciar Sesión</button>
+        <button type="submit" class="btn btn-primary btn-full" id="loginBtn">
+          Iniciar Sesion
+        </button>
         <div id="loginError" class="alert alert-error hidden"></div>
       </form>
 
-      <!-- Registro Form -->
+      <!-- Formulario de registro -->
       <form id="registroForm" class="auth-form">
         <div class="form-group">
           <label for="regNombre">Nombre completo</label>
-          <input type="text" id="regNombre" placeholder="Tu nombre completo" required autocomplete="name" />
+          <input type="text" id="regNombre" class="form-control"
+            placeholder="Tu nombre" required autocomplete="name" />
         </div>
         <div class="form-group">
-          <label for="regEmail">Correo electrónico</label>
-          <input type="email" id="regEmail" placeholder="correo@ejemplo.com" required autocomplete="email" />
+          <label for="regEmail">Correo electronico</label>
+          <input type="email" id="regEmail" class="form-control"
+            placeholder="correo@ejemplo.com" required autocomplete="email" />
         </div>
         <div class="form-group">
-          <label for="regPassword">Contraseña</label>
-          <input type="password" id="regPassword" placeholder="Mínimo 6 caracteres" required autocomplete="new-password" />
+          <label for="regPassword">Contrasena</label>
+          <input type="password" id="regPassword" class="form-control"
+            placeholder="Minimo 6 caracteres" required autocomplete="new-password" />
         </div>
-        <button type="submit" class="btn btn-primary btn-full">Crear cuenta</button>
+        <div class="form-group">
+          <label>Tipo de cuenta</label>
+          <div class="role-selector">
+            <button type="button" class="role-btn active" data-rol="comprador">
+              Comprador
+            </button>
+            <button type="button" class="role-btn" data-rol="artista">
+              Artista
+            </button>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full" id="regBtn">
+          Crear Cuenta
+        </button>
         <div id="regMessage" class="alert hidden"></div>
       </form>
 

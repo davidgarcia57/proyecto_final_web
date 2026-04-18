@@ -1,11 +1,6 @@
-// ─── api.js — Capa de abstracción de la API ───────────────────────────────────
-// Principio D (Dependency Inversion): los módulos de alto nivel (AlumnosModule,
-// CalificacionesModule) dependen de esta abstracción, no de fetch() directamente.
-// Si la API cambia, sólo se modifica aquí.
-
+// ─── api.js — Capa de abstraccion de la API ───────────────────────────────────
 const Api = (() => {
 
-  // Función base: centraliza fetch, manejo de 401 y parsing JSON
   async function request(method, path, body = null) {
     const opts = { method, headers: { 'Content-Type': 'application/json' } };
     if (body !== null) opts.body = JSON.stringify(body);
@@ -21,36 +16,55 @@ const Api = (() => {
     return { ok: res.ok, status: res.status, data };
   }
 
-  // ── Sesión ────────────────────────────────────────────────────────────────
-  const sesion  = ()    => request('GET', '/api/sesion');
-  const logout  = ()    => request('GET', '/api/logout');
+  // Sin redireccion en 401 — para paginas publicas
+  async function publicRequest(method, path, body = null) {
+    const opts = { method, headers: { 'Content-Type': 'application/json' } };
+    if (body !== null) opts.body = JSON.stringify(body);
 
-  // ── Alumnos ───────────────────────────────────────────────────────────────
-  const alumnos = {
-    listar:     ()          => request('GET',    '/api/alumnos'),
-    stats:      ()          => request('GET',    '/api/alumnos/stats'),
-    obtener:    (id)        => request('GET',    `/api/alumnos/${id}`),
-    crear:      (body)      => request('POST',   '/api/alumnos', body),
-    actualizar: (id, body)  => request('PUT',    `/api/alumnos/${id}`, body),
-    eliminar:   (id)        => request('DELETE', `/api/alumnos/${id}`),
+    try {
+      const res  = await fetch(path, opts);
+      const data = await res.json().catch(() => ({}));
+      return { ok: res.ok, status: res.status, data };
+    } catch {
+      return { ok: false, status: 0, data: {} };
+    }
+  }
+
+  // ── Sesion ────────────────────────────────────────────────────────────────
+  const sesion        = ()    => request('GET', '/api/sesion');
+  const sesionPublica = ()    => publicRequest('GET', '/api/sesion');
+  const logout        = ()    => request('GET', '/api/logout');
+
+  // ── Servicios ─────────────────────────────────────────────────────────────
+  const servicios = {
+    stats:      ()         => request('GET',    '/api/servicios/stats'),
+    listar:     ()         => publicRequest('GET', '/api/servicios'),
+    obtener:    (id)       => publicRequest('GET', `/api/servicios/${id}`),
+    crear:      (body)     => request('POST',   '/api/servicios', body),
+    actualizar: (id, body) => request('PUT',    `/api/servicios/${id}`, body),
+    eliminar:   (id)       => request('DELETE', `/api/servicios/${id}`),
   };
 
-  // ── Materias ──────────────────────────────────────────────────────────────
-  const materias = {
-    listar:     ()         => request('GET',    '/api/materias'),
-    obtener:    (id)       => request('GET',    `/api/materias/${id}`),
-    crear:      (body)     => request('POST',   '/api/materias', body),
-    actualizar: (id, body) => request('PUT',    `/api/materias/${id}`, body),
-    eliminar:   (id)       => request('DELETE', `/api/materias/${id}`),
+  // ── Artistas (publico) ────────────────────────────────────────────────────
+  const artistas = {
+    obtener: (id) => publicRequest('GET', `/api/artistas/${id}`),
   };
 
-  // ── Calificaciones ────────────────────────────────────────────────────────
-  const calificaciones = {
-    porAlumno:  (alumnoId)   => request('GET',    `/api/calificaciones/alumno/${alumnoId}`),
-    crear:      (body)       => request('POST',   '/api/calificaciones', body),
-    actualizar: (id, body)   => request('PUT',    `/api/calificaciones/${id}`, body),
-    eliminar:   (id)         => request('DELETE', `/api/calificaciones/${id}`),
+  // ── Pedidos ───────────────────────────────────────────────────────────────
+  const pedidos = {
+    listar:     ()         => request('GET',    '/api/pedidos'),
+    crear:      (body)     => request('POST',   '/api/pedidos', body),
+    actualizar: (id, body) => request('PUT',    `/api/pedidos/${id}`, body),
+    eliminar:   (id)       => request('DELETE', `/api/pedidos/${id}`),
   };
 
-  return { sesion, logout, alumnos, materias, calificaciones };
+  // ── Noticias (Vallecardo) ─────────────────────────────────────────────────
+  const noticias = {
+    listar:     ()         => request('GET',    '/api/noticias'),
+    crear:      (body)     => request('POST',   '/api/noticias', body),
+    actualizar: (id, body) => request('PUT',    `/api/noticias/${id}`, body),
+    eliminar:   (id)       => request('DELETE', `/api/noticias/${id}`),
+  };
+
+  return { sesion, sesionPublica, logout, servicios, artistas, pedidos, noticias };
 })();

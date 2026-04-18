@@ -3,235 +3,168 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EduGest — Dashboard</title>
+  <title>Forge &amp; Pixel — Marketplace de Pixel Art</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
-<body class="app-loading">
+<body>
 
-  <div class="app-shell">
+  <!-- ── Navbar ──────────────────────────────────────────────────────────── -->
+  <nav class="landing-nav" id="landingNav">
+    <a href="/index.html" class="landing-nav-brand">
+      <img src="/images/logo_forge.png" alt="Forge and Pixel" />
+      <span class="landing-nav-brand-text">
+        <span class="brand-forge">FORGE</span><span class="brand-amp"> &amp; </span><span class="brand-pixel">PIXEL</span>
+      </span>
+    </a>
 
-    <!-- ── Sidebar ─────────────────────────────────────────────────────────── -->
-    <aside class="sidebar" id="sidebar">
+    <div class="landing-nav-links">
+      <a href="/marketplace.html" class="landing-nav-link">Marketplace</a>
+      <a href="/vallecardo.html"  class="landing-nav-link">Vallecardo</a>
+    </div>
 
-      <div class="sidebar-logo">
-        <img src="images/logo.png" alt="EduGest" />
-        <div class="sidebar-logo-dot"></div>
+    <div class="landing-nav-actions" id="navActions">
+      <a href="/login.html" class="btn btn-ghost btn-sm">Iniciar Sesion</a>
+      <a href="/login.html#registro" class="btn btn-primary btn-sm">Registrarse</a>
+    </div>
+
+    <button class="landing-nav-toggle" id="navToggle" aria-label="Abrir menu">
+      <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </nav>
+
+  <!-- Menu movil -->
+  <div class="landing-nav-mobile" id="mobileMenu">
+    <a href="/marketplace.html" class="landing-nav-link">Marketplace</a>
+    <a href="/vallecardo.html"  class="landing-nav-link">Vallecardo</a>
+    <a href="/login.html" class="btn btn-ghost btn-sm">Iniciar Sesion</a>
+    <a href="/login.html" class="btn btn-primary btn-sm" id="mobileRegBtn">Registrarse</a>
+  </div>
+
+  <!-- ── Hero ────────────────────────────────────────────────────────────── -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-inner">
+      <div class="hero-content">
+        <img src="/images/logo_forge.png" alt="Forge and Pixel" class="hero-logo" />
+        <h1 class="hero-title">
+          <span class="ht-forge">FORGE</span><span class="ht-amp"> &amp; </span><span class="ht-pixel">PIXEL</span>
+        </h1>
+        <p class="hero-tagline">El marketplace del pixel art indie</p>
+        <p class="hero-desc">
+          Conectamos artistas de pixel art con desarrolladores de videojuegos independientes.
+          Encuentra el diseno perfecto para tu proyecto o publica tu trabajo y empieza a generar ingresos.
+        </p>
+        <div class="hero-actions">
+          <a href="/marketplace.html" class="btn btn-cyan">
+            <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            Explorar Servicios
+          </a>
+          <a href="/login.html" class="btn btn-primary" id="heroRegBtn">
+            Unirse Gratis
+          </a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <img src="/images/personaje_principal.gif" alt="Personaje de Vallecardo" class="hero-character" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Servicios destacados ─────────────────────────────────────────────── -->
+  <section style="background:var(--bg);border-top:1px solid var(--border);">
+    <div class="landing-section">
+      <div class="section-header-row">
+        <div>
+          <span class="section-eyebrow">Marketplace</span>
+          <h2 class="section-heading">Servicios Disponibles</h2>
+          <p class="section-subheading">Trabajos de pixel art de artistas de la comunidad</p>
+        </div>
+        <a href="/marketplace.html" class="btn btn-ghost">
+          Ver todos
+          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
       </div>
 
-      <nav class="sidebar-nav">
-        <span class="sidebar-label">Menú principal</span>
+      <div id="serviciosDestacados" class="services-grid">
+        <!-- Cargado por landing.js -->
+      </div>
 
-        <a href="/index.html" class="sidebar-item active">
-          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-          Dashboard
-        </a>
+      <div id="emptyDestacados" class="empty-state hidden">
+        <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        <strong>Sin servicios aun</strong>
+        <p>Sé el primero en publicar un servicio.</p>
+      </div>
+    </div>
+  </section>
 
-        <a href="/alumnos.html" class="sidebar-item">
-          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          Alumnos
-        </a>
-
-        <a href="/materias.html" class="sidebar-item">
-          <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-          Materias
-        </a>
-
-      </nav>
-
-    </aside>
-
-    <!-- Mobile overlay -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-    <!-- ── Page wrapper ────────────────────────────────────────────────────── -->
-    <div class="page-wrapper">
-
-      <!-- Topbar -->
-      <header class="topbar">
-        <div class="topbar-left">
-          <button class="sidebar-toggle" id="sidebarToggle" aria-label="Abrir menú">
-            <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-          </button>
-          <div class="topbar-brand">
-            <img src="images/logo.png" alt="EduGest" class="topbar-logo-img" />
-            <div class="topbar-brand-dot"></div>
+  <!-- ── Vallecardo preview ────────────────────────────────────────────────── -->
+  <div class="vallecardo-preview-section">
+    <div class="landing-section-full">
+      <div class="landing-section">
+        <div class="vallecardo-preview-inner">
+          <div class="vallecardo-preview-visual">
+            <img src="/images/personaje_principal1.jpg" alt="Personaje principal de Vallecardo" class="vallecardo-char-preview" />
+            <img src="/images/barra_vida.jpeg" alt="Interfaz de juego Vallecardo" class="vallecardo-hpbar" />
+          </div>
+          <div class="vallecardo-preview-text">
+            <span class="section-eyebrow">Proyecto propio</span>
+            <div class="vallecardo-preview-title">VALLECARDO</div>
+            <div class="vallecardo-preview-sub">RPG de pixel art — En desarrollo</div>
+            <p class="vallecardo-preview-desc">
+              Vallecardo es el juego original de Forge &amp; Pixel: un RPG de accion 2D con pixel art
+              artesanal. Explora el valle de una civilizacion olvidada, combate criaturas y descubre
+              los secretos de las ruinas. Cada sprite fue creado por artistas de nuestra comunidad.
+            </p>
+            <div class="vallecardo-badges">
+              <span class="badge badge-cyan">RPG 2D</span>
+              <span class="badge badge-accent">Pixel Art</span>
+              <span class="badge badge-yellow">En Desarrollo</span>
+            </div>
+            <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+              <a href="/vallecardo.html" class="btn btn-cyan">
+                <svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M8 10v4"/><circle cx="15" cy="12" r="1"/><circle cx="18" cy="10" r="1"/><circle cx="18" cy="14" r="1"/></svg>
+                Ver mas sobre Vallecardo
+              </a>
+            </div>
           </div>
         </div>
-        <div class="topbar-right">
-          <div class="topbar-user">
-            <div class="topbar-avatar" id="topbarAvatar">?</div>
-            <span class="topbar-user-name" id="topbarName">—</span>
-          </div>
-          <button class="topbar-icon-btn" id="settingsBtn" title="Ajustes">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-          </button>
-          <button class="topbar-icon-btn topbar-logout" id="logoutBtn" title="Cerrar sesión">
-            <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-          </button>
-        </div>
-      </header>
+      </div>
+    </div>
+  </div>
 
-      <!-- Main content -->
-      <main class="container">
+  <!-- ── CTA de registro ───────────────────────────────────────────────────── -->
+  <section class="cta-section">
+    <h2 class="cta-section-title">Eres artista de pixel art?</h2>
+    <p class="cta-section-desc">
+      Publica tus servicios, conecta con desarrolladores indie y monetiza tu talento
+      en la plataforma creada para la comunidad del pixel art.
+    </p>
+    <div class="cta-actions">
+      <a href="/login.html" class="btn btn-primary" id="ctaRegBtn">
+        Crear Cuenta Gratis
+      </a>
+      <a href="/marketplace.html" class="btn btn-ghost">Explorar el marketplace</a>
+    </div>
+  </section>
 
-        <div class="page-header">
-          <h1>Dashboard</h1>
-          <p>Bienvenido — gestión integral de alumnos, grupos y calificaciones</p>
-        </div>
-
-        <!-- Stats (4 tarjetas) -->
-        <section class="stats-grid stats-grid-4">
-
-          <div class="stat-card stat-card-blue">
-            <div class="stat-icon">
-              <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                <circle cx="9" cy="7" r="4"/>
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-              </svg>
-            </div>
-            <div class="stat-info">
-              <span id="totalAlumnos" class="stat-number">0</span>
-              <span class="stat-label">Alumnos registrados</span>
-            </div>
-          </div>
-
-          <div class="stat-card stat-card-orange">
-            <div class="stat-icon">
-              <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
-                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
-              </svg>
-            </div>
-            <div class="stat-info">
-              <span id="totalGrupos" class="stat-number">0</span>
-              <span class="stat-label">Grupos activos</span>
-            </div>
-          </div>
-
-          <div class="stat-card stat-card-teal">
-            <div class="stat-icon">
-              <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                <line x1="16" y1="2" x2="16" y2="6"/>
-                <line x1="8" y1="2" x2="8" y2="6"/>
-                <line x1="3" y1="10" x2="21" y2="10"/>
-              </svg>
-            </div>
-            <div class="stat-info">
-              <span id="alumnosEsteMes" class="stat-number">0</span>
-              <span class="stat-label">Nuevos este mes</span>
-            </div>
-          </div>
-
-          <div class="stat-card stat-card-purple">
-            <div class="stat-icon">
-              <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-              </svg>
-            </div>
-            <div class="stat-info">
-              <span id="promedioGeneral" class="stat-number">—</span>
-              <span class="stat-label">Promedio general</span>
-            </div>
-          </div>
-
-        </section>
-
-        <!-- Quick actions -->
-        <section class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); margin-bottom: 0;">
-
-          <a href="/alumnos.html" class="section-card" style="text-decoration:none; display:flex; align-items:center; gap:1.1rem; padding:1.4rem 1.6rem; cursor:pointer; transition:transform .18s, box-shadow .18s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
-            <div style="width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,rgba(79,70,229,.14),rgba(99,102,241,.07));border:1.5px solid rgba(79,70,229,.20);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4F46E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            </div>
-            <div>
-              <div style="font-size:.9rem;font-weight:700;color:var(--text);">Gestionar Alumnos</div>
-              <div style="font-size:.78rem;color:var(--muted);margin-top:.15rem;">Ver, agregar y editar registros</div>
-            </div>
-            <svg style="margin-left:auto;flex-shrink:0;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-          </a>
-
-          <a href="/materias.html" class="section-card" style="text-decoration:none;display:flex;align-items:center;gap:1.1rem;padding:1.4rem 1.6rem;cursor:pointer;transition:transform .18s,box-shadow .18s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
-            <div style="width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,rgba(109,40,217,.14),rgba(124,58,237,.07));border:1.5px solid rgba(109,40,217,.20);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6D28D9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-            </div>
-            <div>
-              <div style="font-size:.9rem;font-weight:700;color:var(--text);">Gestionar Materias</div>
-              <div style="font-size:.78rem;color:var(--muted);margin-top:.15rem;">Ver, agregar y editar catálogo</div>
-            </div>
-            <svg style="margin-left:auto;flex-shrink:0;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-          </a>
-
-        </section>
-
-      </main>
-    </div><!-- /.page-wrapper -->
-
-  </div><!-- /.app-shell -->
+  <!-- ── Footer ───────────────────────────────────────────────────────────── -->
+  <footer class="landing-footer">
+    <div class="landing-footer-inner">
+      <div class="landing-footer-brand">
+        <img src="/images/logo_forge.png" alt="Forge and Pixel" />
+        <span class="landing-footer-brand-text">
+          <span class="brand-forge">FORGE</span><span class="brand-amp"> &amp; </span><span class="brand-pixel">PIXEL</span>
+        </span>
+      </div>
+      <p class="landing-footer-copy">
+        &copy; 2026 Forge &amp; Pixel — Universidad Tecnologica de Durango
+      </p>
+    </div>
+  </footer>
 
   <!-- Toast -->
   <div id="toast" class="toast hidden"></div>
 
-  <!-- ── Settings overlay & panel ─────────────────────────────────────────── -->
-  <div id="settingsOverlay" class="settings-overlay"></div>
-  <aside id="settingsPanel" class="settings-panel">
-    <div class="settings-header">
-      <h2>Ajustes</h2>
-      <button id="closeSettings" class="settings-close">&times;</button>
-    </div>
-    <div class="settings-body">
-      <div>
-        <p class="settings-section-label">Mi perfil</p>
-        <div class="settings-profile-card">
-          <div class="settings-avatar-lg" id="settingsAvatar">?</div>
-          <div class="settings-user-details">
-            <span class="settings-user-name"  id="settingsName">—</span>
-            <span class="settings-user-email" id="settingsEmail">—</span>
-            <span class="settings-user-badge">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-              Administrador
-            </span>
-          </div>
-        </div>
-      </div>
-      <div>
-        <p class="settings-section-label">Resumen</p>
-        <div class="settings-stats">
-          <div class="settings-stat-item">
-            <span class="settings-stat-value" id="settingsTotalAlumnos">—</span>
-            <span class="settings-stat-label">Alumnos</span>
-          </div>
-          <div class="settings-stat-item">
-            <span class="settings-stat-value" id="settingsTotalGrupos">—</span>
-            <span class="settings-stat-label">Grupos</span>
-          </div>
-        </div>
-      </div>
-      <div>
-        <p class="settings-section-label">Apariencia</p>
-        <div class="theme-options">
-          <button class="theme-btn" data-theme-val="system">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-            Sistema
-          </button>
-          <button class="theme-btn" data-theme-val="light">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-            Claro
-          </button>
-          <button class="theme-btn" data-theme-val="dark">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-            Oscuro
-          </button>
-        </div>
-      </div>
-    </div>
-  </aside>
-
-  <script src="js/api.js"></script>
-  <script src="js/settings.js"></script>
-  <script src="js/app.js"></script>
-
+  <script src="js/landing.js"></script>
 </body>
 </html>

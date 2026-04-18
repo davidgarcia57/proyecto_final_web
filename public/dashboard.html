@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Forge &amp; Pixel — Panel</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="app-loading">
+
+  <div class="app-shell">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo">
+        <img src="/images/logo_forge.png" alt="Forge and Pixel" style="height:32px;width:auto;object-fit:contain;flex-shrink:0;" />
+        <span class="sidebar-logo-text">
+          <span class="brand-forge">F</span><span class="brand-amp">&amp;</span><span class="brand-pixel">P</span>
+        </span>
+      </div>
+      <nav class="sidebar-nav">
+        <span class="sidebar-label">Menu principal</span>
+        <a href="/dashboard.html" class="sidebar-item active">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          Panel
+        </a>
+        <a href="/marketplace.html" class="sidebar-item">
+          <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          Marketplace
+        </a>
+        <a href="/vallecardo.html" class="sidebar-item">
+          <svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M8 10v4"/><circle cx="15" cy="12" r="1"/><circle cx="18" cy="10" r="1"/><circle cx="18" cy="14" r="1"/></svg>
+          Vallecardo
+        </a>
+        <a href="/pedidos.html" class="sidebar-item">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          Pedidos
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="sidebar-logout" id="logoutBtn">
+          <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Cerrar Sesion
+        </button>
+      </div>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="page-wrapper">
+
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="sidebar-toggle" id="sidebarToggle" aria-label="Abrir menu">
+            <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <div class="topbar-brand">
+            <span class="brand-forge">F</span><span class="brand-amp">&amp;</span><span class="brand-pixel">P</span>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <div class="topbar-user">
+            <div class="topbar-avatar" id="topbarAvatar">?</div>
+            <span class="topbar-user-name" id="topbarName">—</span>
+          </div>
+          <button class="topbar-icon-btn" id="settingsBtn" title="Ajustes">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <main class="container">
+
+        <div class="page-header">
+          <h1>Panel de Control</h1>
+          <p>Vision general de la plataforma Forge &amp; Pixel</p>
+        </div>
+
+        <section class="stats-grid">
+          <div class="stat-card stat-card-cyan">
+            <div class="stat-icon">
+              <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            </div>
+            <div class="stat-info">
+              <span id="totalServicios" class="stat-number">—</span>
+              <span class="stat-label">Servicios activos</span>
+            </div>
+          </div>
+          <div class="stat-card stat-card-rose">
+            <div class="stat-icon">
+              <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <div class="stat-info">
+              <span id="totalPedidos" class="stat-number">—</span>
+              <span class="stat-label">Pedidos totales</span>
+            </div>
+          </div>
+          <div class="stat-card stat-card-yellow">
+            <div class="stat-icon">
+              <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div class="stat-info">
+              <span id="totalArtistas" class="stat-number">—</span>
+              <span class="stat-label">Artistas registrados</span>
+            </div>
+          </div>
+          <div class="stat-card stat-card-accent">
+            <div class="stat-icon">
+              <svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M8 10v4"/><circle cx="15" cy="12" r="1"/><circle cx="18" cy="10" r="1"/><circle cx="18" cy="14" r="1"/></svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-number" style="font-size:1rem;color:var(--accent);">LIVE</span>
+              <span class="stat-label">Vallecardo — En desarrollo</span>
+            </div>
+          </div>
+        </section>
+
+        <p class="section-title">Accesos Rapidos</p>
+        <div class="quick-grid">
+          <a href="/marketplace.html" class="quick-card">
+            <div class="quick-card-icon" style="background:var(--cyan-dim);border:1px solid var(--cyan);">
+              <svg viewBox="0 0 24 24" style="color:var(--cyan);"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            </div>
+            <div>
+              <span class="quick-card-title">Marketplace</span>
+              <span class="quick-card-desc">Gestionar servicios de pixel art</span>
+            </div>
+            <div class="quick-card-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+          </a>
+          <a href="/vallecardo.html" class="quick-card">
+            <div class="quick-card-icon" style="background:var(--accent-dim);border:1px solid var(--accent);">
+              <svg viewBox="0 0 24 24" style="color:var(--accent);"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M8 10v4"/><circle cx="15" cy="12" r="1"/><circle cx="18" cy="10" r="1"/><circle cx="18" cy="14" r="1"/></svg>
+            </div>
+            <div>
+              <span class="quick-card-title">Vallecardo</span>
+              <span class="quick-card-desc">Noticias y actualizaciones del juego</span>
+            </div>
+            <div class="quick-card-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+          </a>
+          <a href="/pedidos.html" class="quick-card">
+            <div class="quick-card-icon" style="background:var(--rose-dim);border:1px solid var(--rose);">
+              <svg viewBox="0 0 24 24" style="color:var(--rose);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            </div>
+            <div>
+              <span class="quick-card-title">Pedidos</span>
+              <span class="quick-card-desc">Ver y gestionar transacciones</span>
+            </div>
+            <div class="quick-card-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+          </a>
+        </div>
+
+      </main>
+    </div>
+
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <div id="settingsOverlay" class="settings-overlay"></div>
+  <aside id="settingsPanel" class="settings-panel">
+    <div class="settings-header">
+      <h2>Ajustes</h2>
+      <button id="closeSettings" class="settings-close">&times;</button>
+    </div>
+    <div class="settings-body">
+      <div>
+        <p class="settings-section-label">Mi perfil</p>
+        <div class="settings-profile-card">
+          <div class="settings-avatar-lg" id="settingsAvatar">?</div>
+          <div>
+            <span class="settings-user-name"  id="settingsName">—</span>
+            <span class="settings-user-email" id="settingsEmail">—</span>
+            <span class="settings-user-badge">
+              <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              Activo
+            </span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <p class="settings-section-label">Apariencia</p>
+        <div class="theme-options">
+          <button class="theme-btn" data-theme-val="system">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+            Sistema
+          </button>
+          <button class="theme-btn" data-theme-val="light">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/></svg>
+            Claro
+          </button>
+          <button class="theme-btn" data-theme-val="dark">
+            <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            Oscuro
+          </button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <script src="js/api.js"></script>
+  <script src="js/settings.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
