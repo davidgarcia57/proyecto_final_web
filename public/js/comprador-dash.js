@@ -80,8 +80,10 @@ function renderDestacados(servicios) {
   document.body.classList.remove('app-loading');
 
   populateSettingsProfile(usuario);
-  document.getElementById('topbarAvatar').textContent = usuario.nombre.trim().charAt(0).toUpperCase();
-  document.getElementById('topbarName').textContent   = usuario.nombre;
+  const avatarEl = document.getElementById('topbarAvatar');
+  avatarEl.textContent = usuario.nombre.trim().charAt(0).toUpperCase();
+  avatarEl.classList.add('avatar-comprador');
+  document.getElementById('topbarName').textContent = usuario.nombre;
   document.getElementById('welcomeMsg').textContent   = `Bienvenido de vuelta, ${usuario.nombre}`;
 
   // Stats del marketplace

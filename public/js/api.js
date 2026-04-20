@@ -2,8 +2,13 @@
 const Api = (() => {
 
   async function request(method, path, body = null) {
-    const opts = { method, headers: { 'Content-Type': 'application/json' } };
-    if (body !== null) opts.body = JSON.stringify(body);
+    const opts = { method };
+    if (body instanceof FormData) {
+      opts.body = body;
+    } else {
+      opts.headers = { 'Content-Type': 'application/json' };
+      if (body !== null) opts.body = JSON.stringify(body);
+    }
 
     const res  = await fetch(path, opts);
 
@@ -63,7 +68,8 @@ const Api = (() => {
 
   // ── Noticias (Vallecardo) ─────────────────────────────────────────────────
   const noticias = {
-    listar:     ()         => request('GET',    '/api/noticias'),
+    listar:     ()         => publicRequest('GET', '/api/noticias'),
+    obtener:    (id)       => publicRequest('GET', `/api/noticias/${id}`),
     crear:      (body)     => request('POST',   '/api/noticias', body),
     actualizar: (id, body) => request('PUT',    `/api/noticias/${id}`, body),
     eliminar:   (id)       => request('DELETE', `/api/noticias/${id}`),

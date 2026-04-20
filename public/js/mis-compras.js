@@ -64,10 +64,14 @@ function renderTabla(compras) {
   if (!sesRes || !sesRes.data.autenticado) { window.location.href = '/login.html'; return; }
 
   const usuario = sesRes.data.usuario;
+  if (usuario.rol === 'artista') { window.location.href = '/mis-ventas.html'; return; }
+
   document.body.classList.remove('app-loading');
 
   populateSettingsProfile(usuario);
-  document.getElementById('topbarAvatar').textContent = usuario.nombre.trim().charAt(0).toUpperCase();
+  const avatarEl = document.getElementById('topbarAvatar');
+  avatarEl.textContent = usuario.nombre.trim().charAt(0).toUpperCase();
+  avatarEl.classList.add('avatar-comprador');
   document.getElementById('topbarName').textContent   = usuario.nombre;
 
   const r = await Api.pedidos.compras();

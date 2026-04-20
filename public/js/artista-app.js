@@ -55,10 +55,12 @@ async function checkSession() {
     const res  = await fetch('/api/sesion');
     const data = await res.json().catch(() => ({}));
     if (data.autenticado) {
-      const actions   = document.getElementById('navActions');
-      const mobileReg = document.getElementById('mobileRegBtn');
-      if (actions)   actions.innerHTML = `<a href="/dashboard.html" class="btn btn-primary btn-sm">Mi Panel</a>`;
-      if (mobileReg) { mobileReg.textContent = 'Mi Panel'; mobileReg.href = '/dashboard.html'; }
+      const rol        = data.usuario?.rol;
+      const panelHref  = rol === 'artista' ? '/artista-dashboard.html' : '/comprador-dashboard.html';
+      const actions    = document.getElementById('navActions');
+      const mobileReg  = document.getElementById('mobileRegBtn');
+      if (actions)   actions.innerHTML = `<a href="${panelHref}" class="btn btn-primary btn-sm">Mi Panel</a>`;
+      if (mobileReg) { mobileReg.textContent = 'Mi Panel'; mobileReg.href = panelHref; }
     }
   } catch { /* sin sesion */ }
 }

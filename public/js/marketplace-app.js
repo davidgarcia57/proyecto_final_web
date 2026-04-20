@@ -25,6 +25,7 @@ function mostrarToast(mensaje, tipo = 'success') {
 let todosLosServicios = [];
 let filtroActual      = 'todos';
 let usuarioAuth       = null;
+const esMiCatalogo    = new URLSearchParams(location.search).get('v') === 'mis';
 
 // ── Thumb por estilo ──────────────────────────────────────────────────────────
 const THUMB_MAP = {
@@ -74,8 +75,20 @@ function renderGrilla(servicios) {
          </div>`
       : `<div class="service-card-thumb ${thumb.cls}">${thumb.label}</div>`;
 
-    const accionesCrud = usuarioAuth ? `
+    const descargaBtn = (usuarioAuth && s.archivo_url)
+      ? `<a class="btn btn-sm btn-ghost" href="/api/servicios/${s.id}/descargar" title="Descargar archivo">
+           <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+             <polyline points="7 10 12 15 17 10"/>
+             <line x1="12" y1="15" x2="12" y2="3"/>
+           </svg>
+         </a>` : '';
+
+    const esDueno = usuarioAuth && usuarioAuth.id === s.artista_id;
+
+    const accionesCrud = esDueno ? `
       <div class="service-card-actions">
+        ${descargaBtn}
         <button class="btn btn-sm btn-ghost" onclick="abrirEditar(${s.id})" title="Editar">
           <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
@@ -118,23 +131,59 @@ function renderGrilla(servicios) {
   }).join('');
 }
 
-// ── Contratar (publico ve, invitado redirige a login) ─────────────────────────
+// ── Contratar ─────────────────────────────────────────────────────────────────
 function contratar(servicioId) {
   if (!usuarioAuth) {
     window.location.href = '/login.html';
     return;
   }
-  // Usuario autenticado: abrir modal de nuevo pedido pre-cargado
-  const selectServicio = document.getElementById('pedidoServicio');
-  if (selectServicio) {
-    selectServicio.value = servicioId;
-    document.getElementById('modalPedido')?.classList.add('open');
-  }
+  const servicio = todosLosServicios.find(s => s.id === servicioId);
+  if (!servicio) return;
+
+  document.getElementById('contratarServicioId').value = servicioId;
+  document.getElementById('contratarNombre').textContent = servicio.titulo;
+  document.getElementById('contratarMonto').value = servicio.precio;
+  document.getElementById('contratarNotas').value = '';
+  document.getElementById('modalContratar').classList.add('open');
 }
+
+// ── Listeners modal contratar ─────────────────────────────────────────────────
+document.getElementById('modalContratarClose').addEventListener('click',    () => document.getElementById('modalContratar').classList.remove('open'));
+document.getElementById('modalContratarCancelar').addEventListener('click', () => document.getElementById('modalContratar').classList.remove('open'));
+document.getElementById('modalContratar').addEventListener('click', e => { if (e.target === document.getElementById('modalContratar')) document.getElementById('modalContratar').classList.remove('open'); });
+
+document.getElementById('modalContratarGuardar').addEventListener('click', async () => {
+  const servicio_id = document.getElementById('contratarServicioId').value;
+  const monto       = document.getElementById('contratarMonto').value;
+  const notas       = document.getElementById('contratarNotas').value.trim() || null;
+
+  if (!monto) {
+    mostrarToast('Ingresa el monto acordado', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('modalContratarGuardar');
+  btn.disabled = true;
+  btn.textContent = 'Enviando...';
+
+  const r = await Api.pedidos.crear({ servicio_id, monto, notas });
+  btn.disabled = false;
+  btn.textContent = 'Enviar Pedido';
+
+  if (!r || !r.ok) {
+    mostrarToast(r?.data?.error || 'Error al crear pedido', 'error');
+    return;
+  }
+
+  document.getElementById('modalContratar').classList.remove('open');
+  mostrarToast('Pedido enviado correctamente');
+});
 
 // ── Cargar servicios ──────────────────────────────────────────────────────────
 async function cargarServicios() {
-  const r = await Api.servicios.listar();
+  const r = esMiCatalogo
+    ? await Api.servicios.propios()
+    : await Api.servicios.listar();
   if (!r || !r.ok) return;
   todosLosServicios = Array.isArray(r.data) ? r.data : [];
   aplicarFiltro();
@@ -177,9 +226,17 @@ function limpiarFormulario() {
   document.getElementById('servicioDesc').value   = '';
   document.getElementById('servicioPrecio').value = '';
   document.getElementById('servicioEstilo').value = 'Pixel Art';
-  document.getElementById('servicioImagen').value = '';
   document.getElementById('servicioEstado').value = 'activo';
   document.getElementById('estadoGroup').style.display = 'none';
+
+  const previewInput  = document.getElementById('servicioPreview');
+  const archivoInput  = document.getElementById('servicioArchivo');
+  const previewHint   = document.getElementById('servicioPreviewHint');
+  const archivoHint   = document.getElementById('servicioArchivoHint');
+  if (previewInput)  previewInput.value  = '';
+  if (archivoInput)  archivoInput.value  = '';
+  if (previewHint)   { previewHint.textContent = ''; previewHint.style.display = 'none'; }
+  if (archivoHint)   { archivoHint.textContent = ''; archivoHint.style.display = 'none'; }
 }
 
 document.getElementById('btnNuevoServicio').addEventListener('click', () => {
@@ -199,9 +256,27 @@ async function abrirEditar(id) {
   document.getElementById('servicioDesc').value   = s.descripcion;
   document.getElementById('servicioPrecio').value = s.precio;
   document.getElementById('servicioEstilo').value = s.estilo;
-  document.getElementById('servicioImagen').value = s.imagen_url || '';
   document.getElementById('servicioEstado').value = s.estado;
   document.getElementById('estadoGroup').style.display = '';
+
+  const previewHint = document.getElementById('servicioPreviewHint');
+  const archivoHint = document.getElementById('servicioArchivoHint');
+  if (previewHint) {
+    if (s.imagen_url) {
+      previewHint.textContent = `Actual: ${s.imagen_url.split('/').pop()} — sube otra para reemplazar`;
+      previewHint.style.display = '';
+    } else {
+      previewHint.style.display = 'none';
+    }
+  }
+  if (archivoHint) {
+    if (s.nombre_archivo) {
+      archivoHint.textContent = `Actual: ${s.nombre_archivo} — sube otro para reemplazar`;
+      archivoHint.style.display = '';
+    } else {
+      archivoHint.style.display = 'none';
+    }
+  }
 
   abrirModal('Editar Servicio');
 }
@@ -213,7 +288,6 @@ document.getElementById('modalServicioGuardar').addEventListener('click', async 
   const descripcion = document.getElementById('servicioDesc').value.trim();
   const precio      = document.getElementById('servicioPrecio').value;
   const estilo      = document.getElementById('servicioEstilo').value;
-  const imagen_url  = document.getElementById('servicioImagen').value.trim() || null;
   const estado      = document.getElementById('servicioEstado').value;
 
   if (!titulo || !descripcion || !precio) {
@@ -221,13 +295,24 @@ document.getElementById('modalServicioGuardar').addEventListener('click', async 
     return;
   }
 
-  const body = { titulo, descripcion, precio, estilo, imagen_url, estado };
-  const btn  = document.getElementById('modalServicioGuardar');
+  const fd = new FormData();
+  fd.append('titulo',      titulo);
+  fd.append('descripcion', descripcion);
+  fd.append('precio',      precio);
+  fd.append('estilo',      estilo);
+  fd.append('estado',      estado);
+
+  const previewFile = document.getElementById('servicioPreview')?.files?.[0];
+  const archivoFile = document.getElementById('servicioArchivo')?.files?.[0];
+  if (previewFile) fd.append('preview', previewFile);
+  if (archivoFile) fd.append('archivo', archivoFile);
+
+  const btn = document.getElementById('modalServicioGuardar');
   btn.disabled = true;
 
   const r = id
-    ? await Api.servicios.actualizar(id, body)
-    : await Api.servicios.crear(body);
+    ? await Api.servicios.actualizar(id, fd)
+    : await Api.servicios.crear(fd);
 
   btn.disabled = false;
 
@@ -272,8 +357,20 @@ modalServicio.addEventListener('click', e => { if (e.target === modalServicio) c
     const initial  = usuarioAuth.nombre.trim().charAt(0).toUpperCase();
     const avatarEl = document.getElementById('topbarAvatar');
     const nameEl   = document.getElementById('topbarName');
-    if (avatarEl) avatarEl.textContent = initial;
-    if (nameEl)   nameEl.textContent   = usuarioAuth.nombre;
+    if (avatarEl) {
+      avatarEl.textContent = initial;
+      avatarEl.classList.add(usuarioAuth.rol === 'artista' ? 'avatar-artista' : 'avatar-comprador');
+    }
+    if (nameEl) nameEl.textContent = usuarioAuth.nombre;
+
+    if (esMiCatalogo && usuarioAuth.rol === 'artista') {
+      const h1 = document.querySelector('.page-header h1');
+      const sub = document.querySelector('.page-header p');
+      if (h1)  h1.textContent  = 'Mi Catálogo';
+      if (sub) sub.textContent = 'Tus servicios publicados en la plataforma';
+      const filterBar = document.getElementById('filterBar');
+      if (filterBar) filterBar.style.display = 'none';
+    }
 
     if (btnNuevo) btnNuevo.style.display = '';
 
@@ -282,13 +379,14 @@ modalServicio.addEventListener('click', e => { if (e.target === modalServicio) c
       window.location.href = '/login.html';
     });
   } else {
-    // Invitado: ocultar boton nuevo servicio y mostrar link a login en topbar
+    if (esMiCatalogo) { window.location.href = '/login.html'; return; }
+
     if (btnNuevo) btnNuevo.style.display = 'none';
 
     const avatarEl = document.getElementById('topbarAvatar');
     const nameEl   = document.getElementById('topbarName');
     if (avatarEl) avatarEl.textContent = '?';
-    if (nameEl)   nameEl.innerHTML = `<a href="/login.html" style="color:var(--cyan);font-size:0.82rem;">Iniciar sesion</a>`;
+    if (nameEl)   nameEl.innerHTML = `<a href="/login.html" style="color:var(--cyan);font-size:0.82rem;">Iniciar sesión</a>`;
 
     document.getElementById('logoutBtn')?.addEventListener('click', () => {
       window.location.href = '/login.html';

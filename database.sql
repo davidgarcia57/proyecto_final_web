@@ -31,18 +31,24 @@ CREATE TABLE IF NOT EXISTS usuarios (
 --  Tabla principal para las operaciones CRUD del proyecto.
 -- ─────────────────────────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS servicios (
-  id          INT            AUTO_INCREMENT PRIMARY KEY,
-  titulo      VARCHAR(150)   NOT NULL,
-  descripcion TEXT           NOT NULL,
-  precio      DECIMAL(10,2)  NOT NULL,
-  estilo      VARCHAR(60)    NOT NULL DEFAULT 'Pixel Art',
-  artista_id  INT            NOT NULL,
-  imagen_url  VARCHAR(500)   DEFAULT NULL,
-  estado      ENUM('activo','inactivo') NOT NULL DEFAULT 'activo',
-  created_at  TIMESTAMP      DEFAULT CURRENT_TIMESTAMP,
+  id            INT            AUTO_INCREMENT PRIMARY KEY,
+  titulo        VARCHAR(150)   NOT NULL,
+  descripcion   TEXT           NOT NULL,
+  precio        DECIMAL(10,2)  NOT NULL,
+  estilo        VARCHAR(60)    NOT NULL DEFAULT 'Pixel Art',
+  artista_id    INT            NOT NULL,
+  imagen_url    VARCHAR(500)   DEFAULT NULL,  -- preview publica (PNG/JPG/GIF)
+  archivo_url   VARCHAR(500)   DEFAULT NULL,  -- asset descargable (.aseprite, .psd, .zip, etc.)
+  nombre_archivo VARCHAR(255)  DEFAULT NULL,  -- nombre original del archivo para la descarga
+  estado        ENUM('activo','inactivo') NOT NULL DEFAULT 'activo',
+  created_at    TIMESTAMP      DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_serv_artista FOREIGN KEY (artista_id)
     REFERENCES usuarios(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
+
+-- Migración para bases de datos existentes (ejecutar manualmente si la tabla ya existe)
+-- ALTER TABLE servicios ADD COLUMN archivo_url   VARCHAR(500) DEFAULT NULL AFTER imagen_url;
+-- ALTER TABLE servicios ADD COLUMN nombre_archivo VARCHAR(255) DEFAULT NULL AFTER archivo_url;
 
 -- ─────────────────────────────────────────────────────────────────────────────
 --  TABLA: pedidos

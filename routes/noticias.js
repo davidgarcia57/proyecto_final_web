@@ -3,6 +3,14 @@ const express = require('express');
 const router  = express.Router();
 const db      = require('../db');
 
+function requireAdmin(req, res, next) {
+  if (!req.session || !req.session.usuario)
+    return res.status(401).json({ error: 'No autorizado' });
+  if (req.session.usuario.rol !== 'admin')
+    return res.status(403).json({ error: 'Solo administradores pueden modificar noticias' });
+  next();
+}
+
 // GET /api/noticias
 router.get('/', (req, res) => {
   db.query('SELECT * FROM noticias ORDER BY id DESC', (err, results) => {
@@ -11,8 +19,17 @@ router.get('/', (req, res) => {
   });
 });
 
+// GET /api/noticias/:id
+router.get('/:id', (req, res) => {
+  db.query('SELECT * FROM noticias WHERE id = ?', [req.params.id], (err, results) => {
+    if (err) return res.status(500).json({ error: 'Error al obtener noticia' });
+    if (results.length === 0) return res.status(404).json({ error: 'Noticia no encontrada' });
+    res.json(results[0]);
+  });
+});
+
 // POST /api/noticias
-router.post('/', (req, res) => {
+router.post('/', requireAdmin, (req, res) => {
   const { titulo, contenido, imagen_url } = req.body;
 
   if (!titulo || !contenido)
@@ -29,7 +46,7 @@ router.post('/', (req, res) => {
 });
 
 // PUT /api/noticias/:id
-router.put('/:id', (req, res) => {
+router.put('/:id', requireAdmin, (req, res) => {
   const { titulo, contenido, imagen_url } = req.body;
 
   if (!titulo || !contenido)
@@ -47,7 +64,7 @@ router.put('/:id', (req, res) => {
 });
 
 // DELETE /api/noticias/:id
-router.delete('/:id', (req, res) => {
+router.delete('/:id', requireAdmin, (req, res) => {
   db.query('DELETE FROM noticias WHERE id=?', [req.params.id], (err, result) => {
     if (err) return res.status(500).json({ error: 'Error al eliminar noticia' });
     if (result.affectedRows === 0) return res.status(404).json({ error: 'Noticia no encontrada' });

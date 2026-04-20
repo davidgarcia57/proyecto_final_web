@@ -21,6 +21,8 @@ function mostrarToast(mensaje, tipo = 'success') {
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
 })();
 
+let usuarioValleAuth = null;
+
 // ── Formatear fecha ───────────────────────────────────────────────────────────
 function formatFecha(iso) {
   return new Date(iso).toLocaleDateString('es-MX', {
@@ -49,15 +51,8 @@ function renderNoticias(noticias) {
 
   empty.classList.add('hidden');
 
-  grid.innerHTML = noticias.map(n => `
-    <div class="news-card">
-      <div class="news-card-header">
-        <div class="news-card-title">${escHtml(n.titulo)}</div>
-        <div class="news-card-date">${formatFecha(n.created_at)}</div>
-      </div>
-      <div class="news-card-body">
-        <div class="news-card-content">${escHtml(n.contenido)}</div>
-      </div>
+  grid.innerHTML = noticias.map(n => {
+    const acciones = usuarioValleAuth ? `
       <div class="news-card-footer">
         <button class="btn btn-sm btn-ghost" onclick="abrirEditarNoticia(${n.id})" title="Editar">
           <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -73,9 +68,21 @@ function renderNoticias(noticias) {
           </svg>
           Eliminar
         </button>
+      </div>` : '';
+
+    return `
+      <div class="news-card">
+        <div class="news-card-header">
+          <div class="news-card-title">${escHtml(n.titulo)}</div>
+          <div class="news-card-date">${formatFecha(n.created_at)}</div>
+        </div>
+        <div class="news-card-body">
+          <div class="news-card-content">${escHtml(n.contenido)}</div>
+        </div>
+        ${acciones}
       </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
 // ── Cargar noticias ───────────────────────────────────────────────────────────
@@ -107,10 +114,9 @@ document.getElementById('btnNuevaNoticia').addEventListener('click', () => {
 });
 
 async function abrirEditarNoticia(id) {
-  const r = await Api.noticias.listar();
-  if (!r) return;
-  const noticia = r.data.find(n => n.id === id);
-  if (!noticia) return;
+  const r = await Api.noticias.obtener(id);
+  if (!r || !r.ok) return;
+  const noticia = r.data;
 
   document.getElementById('noticiaId').value        = noticia.id;
   document.getElementById('noticiaTitulo').value    = noticia.titulo;
@@ -165,27 +171,46 @@ modalNoticia.addEventListener('click', e => { if (e.target === modalNoticia) cer
 
 // ── Arranque ──────────────────────────────────────────────────────────────────
 (async () => {
-  const sesRes = await Api.sesion();
-  if (!sesRes || !sesRes.data.autenticado) {
-    window.location.href = '/login.html';
-    return;
-  }
+  const sesRes      = await Api.sesionPublica();
+  const autenticado = sesRes?.data?.autenticado === true;
 
   document.body.classList.remove('app-loading');
 
-  const usuario  = sesRes.data.usuario;
-  populateSettingsProfile(usuario);
+  if (autenticado) {
+    const usuario = sesRes.data.usuario;
+    usuarioValleAuth = usuario;
+    populateSettingsProfile(usuario);
 
-  const initial  = usuario.nombre.trim().charAt(0).toUpperCase();
-  const avatarEl = document.getElementById('topbarAvatar');
-  const nameEl   = document.getElementById('topbarName');
-  if (avatarEl) avatarEl.textContent = initial;
-  if (nameEl)   nameEl.textContent   = usuario.nombre;
+    const initial = usuario.nombre.trim().charAt(0).toUpperCase();
+    const avatarEl = document.getElementById('topbarAvatar');
+    if (avatarEl) {
+      avatarEl.textContent = initial;
+      avatarEl.classList.add(usuario.rol === 'artista' ? 'avatar-artista' : 'avatar-comprador');
+    }
+    document.getElementById('topbarName').textContent = usuario.nombre;
+
+    const rolLabel   = document.getElementById('sidebarRoleLabel');
+    const panelLink  = document.getElementById('sidebarPanelLink');
+    if (rolLabel) rolLabel.textContent = usuario.rol === 'artista' ? 'Artista' : 'Comprador';
+    if (panelLink) panelLink.href = usuario.rol === 'artista' ? '/artista-dashboard.html' : '/comprador-dashboard.html';
+
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      await Api.logout();
+      window.location.href = '/login.html';
+    });
+  } else {
+    // Visitante: ocultar boton de nueva noticia y adaptar topbar
+    document.getElementById('btnNuevaNoticia').style.display = 'none';
+
+    const avatarEl = document.getElementById('topbarAvatar');
+    const nameEl   = document.getElementById('topbarName');
+    if (avatarEl) avatarEl.textContent = '?';
+    if (nameEl)   nameEl.innerHTML = `<a href="/login.html" style="color:var(--cyan);font-size:0.82rem;">Iniciar sesión</a>`;
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      window.location.href = '/login.html';
+    });
+  }
 
   cargarNoticias();
-
-  document.getElementById('logoutBtn').addEventListener('click', async () => {
-    await Api.logout();
-    window.location.href = '/login.html';
-  });
 })();

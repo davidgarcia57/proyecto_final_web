@@ -50,26 +50,28 @@ async function checkSession() {
     const data = await res.json().catch(() => ({}));
 
     if (data.autenticado) {
-      // Reemplazar botones de login/registro por link al panel
+      const rol       = data.usuario?.rol;
+      const panelHref = rol === 'artista' ? '/artista-dashboard.html' : '/comprador-dashboard.html';
+
       const actions   = document.getElementById('navActions');
       const mobileReg = document.getElementById('mobileRegBtn');
       const heroReg   = document.getElementById('heroRegBtn');
       const ctaReg    = document.getElementById('ctaRegBtn');
 
       if (actions) {
-        actions.innerHTML = `<a href="/dashboard.html" class="btn btn-primary btn-sm">Mi Panel</a>`;
+        actions.innerHTML = `<a href="${panelHref}" class="btn btn-primary btn-sm">Mi Panel</a>`;
       }
       if (mobileReg) {
         mobileReg.textContent = 'Mi Panel';
-        mobileReg.href = '/dashboard.html';
+        mobileReg.href = panelHref;
       }
       if (heroReg) {
         heroReg.textContent = 'Ir al Panel';
-        heroReg.href = '/dashboard.html';
+        heroReg.href = panelHref;
       }
       if (ctaReg) {
         ctaReg.textContent = 'Ir al Panel';
-        ctaReg.href = '/dashboard.html';
+        ctaReg.href = panelHref;
       }
     }
   } catch {
@@ -133,7 +135,7 @@ async function cargarDestacados() {
               <span class="service-price">${precio}</span>
               <div style="display:flex;align-items:center;gap:0.4rem;">
                 <span class="badge badge-accent">${esc(s.estilo)}</span>
-                <a href="/marketplace.html" class="btn btn-sm btn-cyan">Ver</a>
+                <a href="/marketplace.html" class="btn btn-sm btn-cyan">Ver servicio</a>
               </div>
             </div>
           </div>
@@ -146,6 +148,53 @@ async function cargarDestacados() {
   }
 }
 
+// ── Stats con count-up ────────────────────────────────────────────────────────
+function animarContador(el, destino, duracion) {
+  const reducida = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reducida || destino === 0) {
+    el.textContent = destino.toLocaleString('es-MX');
+    return;
+  }
+
+  const inicio = performance.now();
+  function tick(ahora) {
+    const progreso = Math.min((ahora - inicio) / duracion, 1);
+    const ease = 1 - Math.pow(1 - progreso, 3); // ease-out cúbico
+    el.textContent = Math.round(ease * destino).toLocaleString('es-MX');
+    if (progreso < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+async function animarStats() {
+  const elArtistas  = document.getElementById('statArtistas');
+  const elServicios = document.getElementById('statServicios');
+  const elPedidos   = document.getElementById('statPedidos');
+  if (!elArtistas) return;
+
+  try {
+    const res  = await fetch('/api/servicios/stats');
+    const data = await res.json().catch(() => ({}));
+
+    const artistas  = Number(data.totalArtistas)  || 0;
+    const servicios = Number(data.totalServicios)  || 0;
+    const pedidos   = Number(data.totalPedidos)    || 0;
+
+    const observer = new IntersectionObserver((entries) => {
+      if (!entries[0].isIntersecting) return;
+      observer.disconnect();
+      animarContador(elArtistas,  artistas,  900);
+      animarContador(elServicios, servicios, 900);
+      animarContador(elPedidos,   pedidos,   900);
+    }, { threshold: 0.4 });
+
+    observer.observe(elArtistas.closest('.stats-bar'));
+  } catch {
+    [elArtistas, elServicios, elPedidos].forEach(el => { if (el) el.textContent = '0'; });
+  }
+}
+
 // ── Init ──────────────────────────────────────────────────────────────────────
 checkSession();
 cargarDestacados();
+animarStats();

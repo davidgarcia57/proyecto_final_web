@@ -33,7 +33,7 @@ app.use('/api',           authRoutes);
 app.use('/api/servicios', serviciosRoutes);          // GETs publicos, writes verifican auth internamente
 app.use('/api/artistas',  artistasRoutes);           // publico
 app.use('/api/pedidos',   requireAuth, pedidosRoutes);
-app.use('/api/noticias',  requireAuth, noticiasRoutes);
+app.use('/api/noticias',  noticiasRoutes);   // GET publico; POST/PUT/DELETE verifican auth internamente
 
 // ── Inicio del servidor ───────────────────────────────────────────────────────
 const PORT = 3000;

@@ -37,8 +37,11 @@ router.get('/mis-compras', (req, res) => {
   });
 });
 
-// GET /api/pedidos
+// GET /api/pedidos — solo admin
 router.get('/', (req, res) => {
+  if (req.session.usuario.rol !== 'admin')
+    return res.status(403).json({ error: 'Acceso restringido' });
+
   const q = `
     SELECT p.*,
            s.titulo  AS servicio_titulo,
@@ -72,7 +75,7 @@ router.post('/', (req, res) => {
   );
 });
 
-// PUT /api/pedidos/:id — actualizar estado y notas
+// PUT /api/pedidos/:id — solo el artista del servicio puede cambiar estado
 router.put('/:id', (req, res) => {
   const { estado, notas } = req.body;
   const validos = ['pendiente', 'en_proceso', 'completado', 'cancelado'];
@@ -81,8 +84,11 @@ router.put('/:id', (req, res) => {
     return res.status(400).json({ error: 'Estado no válido' });
 
   db.query(
-    'UPDATE pedidos SET estado=?, notas=? WHERE id=?',
-    [estado, notas || null, req.params.id],
+    `UPDATE pedidos p
+     JOIN servicios s ON s.id = p.servicio_id
+     SET p.estado=?, p.notas=?
+     WHERE p.id=? AND s.artista_id=?`,
+    [estado, notas || null, req.params.id, req.session.usuario.id],
     (err, result) => {
       if (err) return res.status(500).json({ error: 'Error al actualizar pedido' });
       if (result.affectedRows === 0) return res.status(404).json({ error: 'Pedido no encontrado' });
@@ -91,13 +97,20 @@ router.put('/:id', (req, res) => {
   );
 });
 
-// DELETE /api/pedidos/:id
+// DELETE /api/pedidos/:id — artista del servicio o comprador del pedido
 router.delete('/:id', (req, res) => {
-  db.query('DELETE FROM pedidos WHERE id=?', [req.params.id], (err, result) => {
-    if (err) return res.status(500).json({ error: 'Error al eliminar pedido' });
-    if (result.affectedRows === 0) return res.status(404).json({ error: 'Pedido no encontrado' });
-    res.json({ mensaje: 'Pedido eliminado' });
-  });
+  const uid = req.session.usuario.id;
+  db.query(
+    `DELETE p FROM pedidos p
+     JOIN servicios s ON s.id = p.servicio_id
+     WHERE p.id=? AND (p.comprador_id=? OR s.artista_id=?)`,
+    [req.params.id, uid, uid],
+    (err, result) => {
+      if (err) return res.status(500).json({ error: 'Error al eliminar pedido' });
+      if (result.affectedRows === 0) return res.status(404).json({ error: 'Pedido no encontrado' });
+      res.json({ mensaje: 'Pedido eliminado' });
+    }
+  );
 });
 
 module.exports = router;
