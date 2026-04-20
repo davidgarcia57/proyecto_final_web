@@ -75,5 +75,11 @@ const Api = (() => {
     eliminar:   (id)       => request('DELETE', `/api/noticias/${id}`),
   };
 
-  return { sesion, sesionPublica, logout, servicios, artistas, pedidos, noticias };
+  // ── Mensajería ────────────────────────────────────────────────────────────
+  const mensajes = {
+    listar: (pedidoId)       => request('GET',  `/api/mensajes/${pedidoId}`),
+    enviar: (pedidoId, body) => request('POST', `/api/mensajes/${pedidoId}`, body),
+  };
+
+  return { sesion, sesionPublica, logout, servicios, artistas, pedidos, noticias, mensajes };
 })();

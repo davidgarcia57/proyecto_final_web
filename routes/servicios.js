@@ -93,18 +93,34 @@ router.get('/propios', requireAuth, (req, res) => {
   );
 });
 
-// ── GET /api/servicios — publico ──────────────────────────────────────────────
+// ── GET /api/servicios — publico, con filtros opcionales ──────────────────────
+// Query params: estilo, complejidad, precio_min, precio_max, artista_id
 router.get('/', (req, res) => {
+  const { estilo, complejidad, precio_min, precio_max, artista_id } = req.query;
+
+  const conditions = ["s.estado = 'activo'"];
+  const params     = [];
+
+  if (estilo)      { conditions.push('s.estilo = ?');       params.push(estilo); }
+  if (complejidad) { conditions.push('s.complejidad = ?');  params.push(complejidad); }
+  if (precio_min)  { conditions.push('s.precio >= ?');      params.push(parseFloat(precio_min)); }
+  if (precio_max)  { conditions.push('s.precio <= ?');      params.push(parseFloat(precio_max)); }
+  if (artista_id)  { conditions.push('s.artista_id = ?');   params.push(parseInt(artista_id)); }
+
   const q = `
-    SELECT s.id, s.titulo, s.descripcion, s.precio, s.estilo,
+    SELECT s.id, s.titulo, s.descripcion, s.precio, s.estilo, s.complejidad,
            s.imagen_url, s.archivo_url, s.nombre_archivo, s.estado, s.created_at,
-           u.id AS artista_id, u.nombre AS artista_nombre
+           u.id AS artista_id, u.nombre AS artista_nombre,
+           ROUND(COALESCE(AVG(v.estrellas), 0), 1) AS rating_promedio,
+           COUNT(v.id) AS total_valoraciones
     FROM servicios s
     JOIN usuarios u ON u.id = s.artista_id
-    WHERE s.estado = 'activo'
+    LEFT JOIN valoraciones v ON v.servicio_id = s.id
+    WHERE ${conditions.join(' AND ')}
+    GROUP BY s.id
     ORDER BY s.id DESC
   `;
-  db.query(q, (err, results) => {
+  db.query(q, params, (err, results) => {
     if (err) return res.status(500).json({ error: 'Error al obtener servicios' });
     res.json(results);
   });
@@ -125,25 +141,47 @@ router.get('/:id', (req, res) => {
   });
 });
 
-// ── GET /api/servicios/:id/descargar — requiere autenticacion ─────────────────
+// ── GET /api/servicios/:id/descargar — gating: artista propio O pedido completado ──
 router.get('/:id/descargar', requireAuth, (req, res) => {
+  const servicioId = req.params.id;
+  const usuarioId  = req.session.usuario.id;
+
   db.query(
-    'SELECT archivo_url, nombre_archivo, titulo FROM servicios WHERE id = ?',
-    [req.params.id],
+    'SELECT archivo_url, nombre_archivo, titulo, artista_id FROM servicios WHERE id = ?',
+    [servicioId],
     (err, results) => {
       if (err || results.length === 0)
         return res.status(404).json({ error: 'Servicio no encontrado' });
 
-      const { archivo_url, nombre_archivo, titulo } = results[0];
+      const { archivo_url, nombre_archivo, artista_id } = results[0];
       if (!archivo_url)
         return res.status(404).json({ error: 'Este servicio no tiene archivo adjunto' });
 
-      const filePath = path.join(__dirname, '..', 'public', archivo_url);
-      if (!fs.existsSync(filePath))
-        return res.status(404).json({ error: 'Archivo no encontrado en el servidor' });
+      // El artista dueño siempre puede descargar su propio asset
+      if (artista_id === usuarioId) return enviarArchivo();
 
-      const descargaNombre = nombre_archivo || path.basename(archivo_url);
-      res.download(filePath, descargaNombre);
+      // Comprador: verificar pedido completado
+      db.query(
+        `SELECT id FROM pedidos
+         WHERE servicio_id = ? AND comprador_id = ? AND estado = 'completado'
+         LIMIT 1`,
+        [servicioId, usuarioId],
+        (e2, pedidos) => {
+          if (e2) return res.status(500).json({ error: 'Error al verificar acceso' });
+          if (pedidos.length === 0)
+            return res.status(403).json({
+              error: 'Acceso denegado. Debes completar el pedido para descargar este asset.'
+            });
+          enviarArchivo();
+        }
+      );
+
+      function enviarArchivo() {
+        const filePath = path.join(__dirname, '..', 'public', archivo_url);
+        if (!fs.existsSync(filePath))
+          return res.status(404).json({ error: 'Archivo no encontrado en el servidor' });
+        res.download(filePath, nombre_archivo || path.basename(archivo_url));
+      }
     }
   );
 });
@@ -153,11 +191,14 @@ router.post('/', requireAuth, (req, res) => {
   upload(req, res, (uploadErr) => {
     if (uploadErr) return res.status(400).json({ error: uploadErr.message });
 
-    const { titulo, descripcion, precio, estilo } = req.body;
+    const { titulo, descripcion, precio, estilo, complejidad } = req.body;
     const artista_id = req.session.usuario.id;
 
     if (!titulo || !descripcion || !precio)
       return res.status(400).json({ error: 'Titulo, descripcion y precio son obligatorios' });
+
+    const complejidadesValidas = ['Simple', 'Detallado', 'Epico'];
+    const complejidadFinal = complejidadesValidas.includes(complejidad) ? complejidad : 'Simple';
 
     const imagen_url     = req.files?.preview?.[0]
       ? `/uploads/previews/${req.files.preview[0].filename}` : null;
@@ -167,9 +208,9 @@ router.post('/', requireAuth, (req, res) => {
 
     db.query(
       `INSERT INTO servicios
-         (titulo, descripcion, precio, estilo, artista_id, imagen_url, archivo_url, nombre_archivo)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-      [titulo, descripcion, parseFloat(precio), estilo || 'Pixel Art',
+         (titulo, descripcion, precio, estilo, complejidad, artista_id, imagen_url, archivo_url, nombre_archivo)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [titulo, descripcion, parseFloat(precio), estilo || 'Pixel Art', complejidadFinal,
        artista_id, imagen_url, archivo_url, nombre_archivo],
       (err, result) => {
         if (err) return res.status(500).json({ error: 'Error al crear servicio' });
@@ -184,14 +225,17 @@ router.put('/:id', requireAuth, (req, res) => {
   upload(req, res, (uploadErr) => {
     if (uploadErr) return res.status(400).json({ error: uploadErr.message });
 
-    const { titulo, descripcion, precio, estilo, estado } = req.body;
+    const { titulo, descripcion, precio, estilo, complejidad, estado } = req.body;
 
     if (!titulo || !descripcion || !precio)
       return res.status(400).json({ error: 'Titulo, descripcion y precio son obligatorios' });
 
-    const sets   = ['titulo=?', 'descripcion=?', 'precio=?', 'estilo=?', 'estado=?'];
+    const complejidadesValidas = ['Simple', 'Detallado', 'Epico'];
+    const complejidadFinal = complejidadesValidas.includes(complejidad) ? complejidad : 'Simple';
+
+    const sets   = ['titulo=?', 'descripcion=?', 'precio=?', 'estilo=?', 'complejidad=?', 'estado=?'];
     const values = [titulo, descripcion, parseFloat(precio),
-                    estilo || 'Pixel Art', estado || 'activo'];
+                    estilo || 'Pixel Art', complejidadFinal, estado || 'activo'];
 
     if (req.files?.preview?.[0]) {
       sets.push('imagen_url=?');

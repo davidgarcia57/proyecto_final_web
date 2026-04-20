@@ -83,16 +83,48 @@ router.put('/:id', (req, res) => {
   if (!validos.includes(estado))
     return res.status(400).json({ error: 'Estado no válido' });
 
+  const artista_id = req.session.usuario.id;
+
+  // Verificar que el pedido existe, pertenece al artista y obtener monto + estado actual
   db.query(
-    `UPDATE pedidos p
+    `SELECT p.id, p.monto, p.estado AS estado_actual, s.artista_id
+     FROM pedidos p
      JOIN servicios s ON s.id = p.servicio_id
-     SET p.estado=?, p.notas=?
-     WHERE p.id=? AND s.artista_id=?`,
-    [estado, notas || null, req.params.id, req.session.usuario.id],
-    (err, result) => {
-      if (err) return res.status(500).json({ error: 'Error al actualizar pedido' });
-      if (result.affectedRows === 0) return res.status(404).json({ error: 'Pedido no encontrado' });
-      res.json({ mensaje: 'Pedido actualizado' });
+     WHERE p.id = ? AND s.artista_id = ?`,
+    [req.params.id, artista_id],
+    (errChk, rows) => {
+      if (errChk) return res.status(500).json({ error: 'Error al verificar pedido' });
+      if (rows.length === 0) return res.status(404).json({ error: 'Pedido no encontrado' });
+
+      const { monto, estado_actual } = rows[0];
+      const completandoAhora = estado === 'completado' && estado_actual !== 'completado';
+
+      db.query(
+        `UPDATE pedidos p
+         JOIN servicios s ON s.id = p.servicio_id
+         SET p.estado=?, p.notas=?
+         WHERE p.id=? AND s.artista_id=?`,
+        [estado, notas || null, req.params.id, artista_id],
+        (err, result) => {
+          if (err) return res.status(500).json({ error: 'Error al actualizar pedido' });
+          if (result.affectedRows === 0)
+            return res.status(404).json({ error: 'Pedido no encontrado' });
+
+          // Abonar oro al artista solo cuando el pedido pasa a 'completado' por primera vez
+          if (completandoAhora) {
+            const oroGanado = Math.floor(parseFloat(monto) / 10);
+            if (oroGanado > 0) {
+              db.query(
+                'UPDATE usuarios SET saldo_oro = saldo_oro + ? WHERE id = ?',
+                [oroGanado, artista_id],
+                () => {} // error no-op: el pedido ya se actualizó correctamente
+              );
+            }
+          }
+
+          res.json({ mensaje: 'Pedido actualizado' });
+        }
+      );
     }
   );
 });

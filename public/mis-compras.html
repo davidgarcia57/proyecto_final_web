@@ -120,6 +120,7 @@
                 <th>Monto</th>
                 <th>Estado</th>
                 <th>Fecha</th>
+                <th>Chat</th>
               </tr>
             </thead>
             <tbody id="comprasTbody"></tbody>
@@ -136,6 +137,31 @@
   </div>
 
   <div id="toast" class="toast hidden" role="alert"></div>
+
+  <!-- Panel de mensajería -->
+  <div id="chatOverlay" class="chat-overlay"></div>
+  <aside id="chatPanel" class="chat-panel">
+    <div class="chat-header">
+      <div>
+        <div class="chat-title" id="chatTitle">Mensajes</div>
+        <div class="chat-subtitle" id="chatSubtitle">Pedido #—</div>
+      </div>
+      <button class="chat-close" id="chatClose" aria-label="Cerrar chat">&times;</button>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="chat-empty hidden" id="chatEmpty">Sin mensajes todavía. ¡Inicia la conversación!</div>
+    </div>
+    <div class="chat-input-area">
+      <textarea id="chatInput" class="form-control" rows="2"
+        placeholder="Escribe un mensaje... (Enter para enviar)" maxlength="2000"></textarea>
+      <button class="btn btn-primary" id="chatEnviar">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+        Enviar
+      </button>
+    </div>
+  </aside>
 
   <div id="settingsOverlay" class="settings-overlay"></div>
   <aside id="settingsPanel" class="settings-panel">

@@ -3,11 +3,13 @@ const express = require('express');
 const session = require('express-session');
 const path    = require('path');
 
-const authRoutes      = require('./routes/auth');
-const serviciosRoutes = require('./routes/servicios');  // GET public, POST/PUT/DELETE protegidos internamente
-const pedidosRoutes   = require('./routes/pedidos');
-const noticiasRoutes  = require('./routes/noticias');
-const artistasRoutes  = require('./routes/artistas');   // perfil publico
+const authRoutes         = require('./routes/auth');
+const serviciosRoutes    = require('./routes/servicios');    // GET public, POST/PUT/DELETE protegidos internamente
+const pedidosRoutes      = require('./routes/pedidos');
+const noticiasRoutes     = require('./routes/noticias');
+const artistasRoutes     = require('./routes/artistas');     // perfil publico
+const valoracionesRoutes = require('./routes/valoraciones'); // sistema de reputacion
+const mensajesRoutes     = require('./routes/mensajes');     // mensajeria por pedido
 
 const app = express();
 
@@ -29,11 +31,13 @@ function requireAuth(req, res, next) {
 }
 
 // ── Rutas ─────────────────────────────────────────────────────────────────────
-app.use('/api',           authRoutes);
-app.use('/api/servicios', serviciosRoutes);          // GETs publicos, writes verifican auth internamente
-app.use('/api/artistas',  artistasRoutes);           // publico
-app.use('/api/pedidos',   requireAuth, pedidosRoutes);
-app.use('/api/noticias',  noticiasRoutes);   // GET publico; POST/PUT/DELETE verifican auth internamente
+app.use('/api',              authRoutes);
+app.use('/api/servicios',    serviciosRoutes);          // GETs publicos, writes verifican auth internamente
+app.use('/api/artistas',     artistasRoutes);           // publico
+app.use('/api/pedidos',      requireAuth, pedidosRoutes);
+app.use('/api/noticias',     noticiasRoutes);           // GET publico; POST/PUT/DELETE verifican auth internamente
+app.use('/api/valoraciones', valoracionesRoutes);       // GET publico; POST/DELETE requieren auth
+app.use('/api/mensajes',    requireAuth, mensajesRoutes); // GET/POST requieren auth + acceso al pedido
 
 // ── Inicio del servidor ───────────────────────────────────────────────────────
 const PORT = 3000;

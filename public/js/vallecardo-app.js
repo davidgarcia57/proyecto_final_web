@@ -207,7 +207,16 @@ modalNoticia.addEventListener('click', e => { if (e.target === modalNoticia) cer
     if (avatarEl) avatarEl.textContent = '?';
     if (nameEl)   nameEl.innerHTML = `<a href="/login.html" style="color:var(--cyan);font-size:0.82rem;">Iniciar sesión</a>`;
 
-    document.getElementById('logoutBtn').addEventListener('click', () => {
+    // Panel link → login, no dashboard (evita cargando infinito al dar atrás)
+    const panelLink = document.getElementById('sidebarPanelLink');
+    if (panelLink) panelLink.href = '/login.html';
+
+    // Cambiar botón "Cerrar Sesión" → "Iniciar Sesión"
+    const logoutBtn = document.getElementById('logoutBtn');
+    logoutBtn.innerHTML = `
+      <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+      Iniciar Sesión`;
+    logoutBtn.addEventListener('click', () => {
       window.location.href = '/login.html';
     });
   }

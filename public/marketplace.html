@@ -76,12 +76,26 @@
           <p>Servicios de pixel art disponibles en la plataforma</p>
         </div>
 
-        <div class="actions-bar">
-          <div class="filter-bar" id="filterBar">
+        <!-- Perfiles Destacados — ERS mockup p.5 -->
+        <section id="perfilesDestacados" style="margin-bottom:1.75rem;">
+          <p class="section-title" style="margin-bottom:0.85rem;">Perfiles Destacados</p>
+          <div id="perfilesGrid" style="
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 0.75rem;
+          ">
+            <!-- Generado por JS al cargar artistas con más servicios -->
+          </div>
+        </section>
+
+        <!-- Filtros: estilo + complejidad + precio -->
+        <div class="actions-bar" style="flex-wrap:wrap; gap:0.75rem;">
+          <!-- Filtros de estilo -->
+          <div class="filter-bar" id="filterBar" style="flex:1; min-width:0;">
             <button class="filter-btn active" data-estilo="todos">Todos</button>
             <button class="filter-btn" data-estilo="Pixel Art">Pixel Art</button>
             <button class="filter-btn" data-estilo="Ilustracion">Ilustración</button>
-            <button class="filter-btn" data-estilo="Concept Art">Concept Art</button>
+            <button class="filter-btn" data-estilo="Concept Art">Concept</button>
             <button class="filter-btn" data-estilo="Animacion">Animación</button>
             <button class="filter-btn" data-estilo="Personajes">Personajes</button>
             <button class="filter-btn" data-estilo="Fondos">Fondos</button>
@@ -92,6 +106,44 @@
           </button>
         </div>
 
+        <!-- Filtros secundarios: Complejidad + Precio -->
+        <div style="
+          display:     flex;
+          gap:         0.6rem;
+          flex-wrap:   wrap;
+          align-items: center;
+          margin-bottom: 1.25rem;
+          padding:     0.55rem 0.85rem;
+          background:  var(--surface);
+          border:      2px solid var(--border);
+          box-shadow:  var(--shadow-hard-sm);
+        ">
+          <span style="font-family:var(--font-pixel);font-size:0.72rem;color:var(--muted);letter-spacing:0.1em;">COMPLEJIDAD:</span>
+          <button class="filter-btn active" data-complejidad="todos" id="cmpTodos">Todas</button>
+          <button class="filter-btn" data-complejidad="Simple">
+            <span style="color:var(--green);">&#9632;</span> Simple
+          </button>
+          <button class="filter-btn" data-complejidad="Detallado">
+            <span style="color:var(--yellow);">&#9632;</span> Detallado
+          </button>
+          <button class="filter-btn" data-complejidad="Epico">
+            <span style="color:var(--accent);">&#9632;</span> Épico
+          </button>
+
+          <span style="width:1px;height:1.5rem;background:var(--border);margin:0 0.25rem;"></span>
+
+          <span style="font-family:var(--font-pixel);font-size:0.72rem;color:var(--muted);letter-spacing:0.1em;">PRECIO:</span>
+          <input type="number" id="precioMin" class="form-control"
+            placeholder="Mín" min="0" step="50"
+            style="width:80px;padding:0.3rem 0.5rem;font-size:0.8rem;" />
+          <span style="color:var(--muted);font-size:0.8rem;">—</span>
+          <input type="number" id="precioMax" class="form-control"
+            placeholder="Máx" min="0" step="50"
+            style="width:80px;padding:0.3rem 0.5rem;font-size:0.8rem;" />
+          <button class="btn btn-ghost btn-sm" id="btnAplicarPrecio">Aplicar</button>
+          <button class="btn btn-ghost btn-sm" id="btnLimpiarFiltros" style="color:var(--muted);">Limpiar</button>
+        </div>
+
         <div id="serviciosGrid" class="services-grid">
           <!-- Tarjetas generadas por JS -->
         </div>
@@ -99,7 +151,7 @@
         <div id="emptyServicios" class="empty-state hidden">
           <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
           <strong>Sin servicios disponibles</strong>
-          <p>Agrega el primer servicio al marketplace.</p>
+          <p>Prueba ajustando los filtros de complejidad o precio.</p>
         </div>
 
       </main>
@@ -146,6 +198,14 @@
               <option value="Fondos">Fondos</option>
             </select>
           </div>
+        </div>
+        <div class="form-group">
+          <label for="servicioComplejidad">Complejidad del trabajo</label>
+          <select id="servicioComplejidad" class="form-control">
+            <option value="Simple">Simple — sprite único, fondo básico</option>
+            <option value="Detallado">Detallado — animaciones, múltiples capas</option>
+            <option value="Epico">Épico — escenas completas, tilesets full</option>
+          </select>
         </div>
         <div class="form-group">
           <label for="servicioPreview">Vista previa (JPG, PNG, GIF, WEBP — opcional)</label>
@@ -249,6 +309,120 @@
   <script src="js/api.js"></script>
   <script src="js/settings.js"></script>
   <script src="js/marketplace-app.js"></script>
+  <script>
+    /* ── Filtros de complejidad y precio — lógica standalone ─────────────── */
+    document.addEventListener('DOMContentLoaded', () => {
+
+      // Estado de filtros secundarios
+      let filtroComplejidad = 'todos';
+      let filtroPrecioMin   = null;
+      let filtroPrecioMax   = null;
+
+      // Botones de complejidad
+      document.querySelectorAll('[data-complejidad]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('[data-complejidad]').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          filtroComplejidad = btn.dataset.complejidad;
+          aplicarFiltrosSecundarios();
+        });
+      });
+
+      // Aplicar rango de precio
+      document.getElementById('btnAplicarPrecio').addEventListener('click', () => {
+        const minVal = document.getElementById('precioMin').value;
+        const maxVal = document.getElementById('precioMax').value;
+        filtroPrecioMin = minVal ? parseFloat(minVal) : null;
+        filtroPrecioMax = maxVal ? parseFloat(maxVal) : null;
+        aplicarFiltrosSecundarios();
+      });
+
+      // Limpiar todos los filtros secundarios
+      document.getElementById('btnLimpiarFiltros').addEventListener('click', () => {
+        filtroComplejidad = 'todos';
+        filtroPrecioMin   = null;
+        filtroPrecioMax   = null;
+        document.getElementById('precioMin').value = '';
+        document.getElementById('precioMax').value = '';
+        document.querySelectorAll('[data-complejidad]').forEach(b => b.classList.remove('active'));
+        document.getElementById('cmpTodos').classList.add('active');
+        aplicarFiltrosSecundarios();
+      });
+
+      // Filtra las tarjetas ya renderizadas en el DOM sin nuevo fetch
+      function aplicarFiltrosSecundarios() {
+        const tarjetas = document.querySelectorAll('#serviciosGrid .service-card');
+        tarjetas.forEach(card => {
+          const complejidad = card.dataset.complejidad || 'Simple';
+          const precio      = parseFloat(card.dataset.precio || '0');
+          let visible = true;
+          if (filtroComplejidad !== 'todos' && complejidad !== filtroComplejidad) visible = false;
+          if (filtroPrecioMin !== null && precio < filtroPrecioMin) visible = false;
+          if (filtroPrecioMax !== null && precio > filtroPrecioMax) visible = false;
+          card.style.display = visible ? '' : 'none';
+        });
+
+        // Actualizar estado vacío
+        const visibles = document.querySelectorAll('#serviciosGrid .service-card:not([style*="none"])');
+        const empty = document.getElementById('emptyServicios');
+        if (empty) empty.classList.toggle('hidden', visibles.length > 0);
+      }
+
+      // Cargar perfiles destacados (top 4 artistas con más servicios)
+      fetch('/api/servicios')
+        .then(r => r.ok ? r.json() : [])
+        .then(servicios => {
+          const conteo = {};
+          servicios.forEach(s => {
+            if (!conteo[s.artista_id])
+              conteo[s.artista_id] = { id: s.artista_id, nombre: s.artista_nombre, total: 0 };
+            conteo[s.artista_id].total++;
+          });
+          const top4 = Object.values(conteo)
+            .sort((a, b) => b.total - a.total)
+            .slice(0, 4);
+
+          const grid = document.getElementById('perfilesGrid');
+          if (!grid || top4.length === 0) {
+            document.getElementById('perfilesDestacados').style.display = 'none';
+            return;
+          }
+
+          grid.innerHTML = top4.map(a => `
+            <a href="/artista.html?id=${a.id}" style="
+              display:        flex;
+              align-items:    center;
+              gap:            0.65rem;
+              padding:        0.75rem 0.9rem;
+              background:     var(--surface);
+              border:         2px solid var(--border);
+              box-shadow:     var(--shadow-hard-sm);
+              text-decoration:none;
+              color:          var(--text);
+              transition:     transform 150ms ease, box-shadow 150ms ease;
+              cursor:         pointer;
+            "
+            onmouseenter="this.style.transform='translate(-2px,-2px)';this.style.boxShadow='var(--shadow-hard)';this.style.borderColor='var(--accent)'"
+            onmouseleave="this.style.transform='';this.style.boxShadow='var(--shadow-hard-sm)';this.style.borderColor='var(--border)'">
+              <div style="
+                width:42px;height:42px;
+                background:var(--accent-dim);border:2px solid var(--accent);
+                display:flex;align-items:center;justify-content:center;
+                font-family:var(--font-pixel);font-size:1.1rem;color:var(--accent);
+                flex-shrink:0;
+              ">${a.nombre.charAt(0).toUpperCase()}</div>
+              <div style="min-width:0;">
+                <div style="font-weight:700;font-size:0.85rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${a.nombre}</div>
+                <div style="font-family:var(--font-pixel);font-size:0.65rem;color:var(--muted);letter-spacing:0.06em;">${a.total} servicio${a.total !== 1 ? 's' : ''}</div>
+              </div>
+            </a>
+          `).join('');
+        })
+        .catch(() => {
+          document.getElementById('perfilesDestacados').style.display = 'none';
+        });
+    });
+  </script>
 
 </body>
 </html>

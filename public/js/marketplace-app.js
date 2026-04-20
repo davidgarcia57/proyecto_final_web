@@ -9,6 +9,27 @@ function mostrarToast(mensaje, tipo = 'success') {
   toast._timer = setTimeout(() => toast.classList.add('hidden'), 3200);
 }
 
+async function descargarActivo(servicioId) {
+  const res = await fetch(`/api/servicios/${servicioId}/descargar`);
+  if (res.ok) {
+    const blob = await res.blob();
+    const cd   = res.headers.get('content-disposition') || '';
+    const match = cd.match(/filename="?([^"]+)"?/);
+    const nombre = match ? match[1] : `asset_${servicioId}`;
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = nombre;
+    a.click();
+    URL.revokeObjectURL(url);
+  } else if (res.status === 403) {
+    mostrarToast('Debes completar el pedido para descargar este asset.', 'error');
+  } else if (res.status === 404) {
+    mostrarToast('Este servicio no tiene archivo adjunto.', 'error');
+  } else {
+    mostrarToast('Error al descargar el archivo.', 'error');
+  }
+}
+
 (function initSidebar() {
   const sidebar = document.getElementById('sidebar');
   const overlay = document.getElementById('sidebarOverlay');
@@ -76,13 +97,13 @@ function renderGrilla(servicios) {
       : `<div class="service-card-thumb ${thumb.cls}">${thumb.label}</div>`;
 
     const descargaBtn = (usuarioAuth && s.archivo_url)
-      ? `<a class="btn btn-sm btn-ghost" href="/api/servicios/${s.id}/descargar" title="Descargar archivo">
+      ? `<button class="btn btn-sm btn-ghost" onclick="descargarActivo(${s.id})" title="Descargar archivo">
            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
              <polyline points="7 10 12 15 17 10"/>
              <line x1="12" y1="15" x2="12" y2="3"/>
            </svg>
-         </a>` : '';
+         </button>` : '';
 
     const esDueno = usuarioAuth && usuarioAuth.id === s.artista_id;
 
@@ -108,8 +129,20 @@ function renderGrilla(servicios) {
       </button>
     `;
 
+    const complejidadBadgeColor = { Simple: 'badge-green', Detallado: 'badge-yellow', Epico: 'badge-accent' };
+    const cmpColor = complejidadBadgeColor[s.complejidad] || 'badge-muted';
+
+    const starsHtml = s.rating_promedio > 0
+      ? `<span style="font-family:var(--font-mono);font-size:0.72rem;color:var(--yellow);" title="${s.rating_promedio} estrellas">
+           ${'★'.repeat(Math.round(s.rating_promedio))}${'☆'.repeat(5 - Math.round(s.rating_promedio))}
+           <span style="color:var(--muted);">${parseFloat(s.rating_promedio).toFixed(1)}</span>
+         </span>`
+      : '';
+
     return `
-      <div class="service-card">
+      <div class="service-card"
+           data-complejidad="${escHtml(s.complejidad || 'Simple')}"
+           data-precio="${parseFloat(s.precio)}">
         ${thumbEl}
         <div class="service-card-body">
           <div class="service-card-title">${escHtml(s.titulo)}</div>
@@ -118,10 +151,11 @@ function renderGrilla(servicios) {
               por ${escHtml(s.artista_nombre)}
             </a>
           </div>
+          ${starsHtml}
           <div class="service-card-footer">
             <span class="service-price">${precio}</span>
-            <div style="display:flex;align-items:center;gap:0.4rem;">
-              <span class="badge badge-accent">${escHtml(s.estilo)}</span>
+            <div style="display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap;">
+              <span class="badge ${cmpColor}">${escHtml(s.complejidad || 'Simple')}</span>
               ${accionesCrud}
             </div>
           </div>
@@ -137,14 +171,7 @@ function contratar(servicioId) {
     window.location.href = '/login.html';
     return;
   }
-  const servicio = todosLosServicios.find(s => s.id === servicioId);
-  if (!servicio) return;
-
-  document.getElementById('contratarServicioId').value = servicioId;
-  document.getElementById('contratarNombre').textContent = servicio.titulo;
-  document.getElementById('contratarMonto').value = servicio.precio;
-  document.getElementById('contratarNotas').value = '';
-  document.getElementById('modalContratar').classList.add('open');
+  window.location.href = `/checkout.html?id=${servicioId}`;
 }
 
 // ── Listeners modal contratar ─────────────────────────────────────────────────
@@ -197,11 +224,12 @@ function aplicarFiltro() {
   }
 }
 
-// ── Filtros ───────────────────────────────────────────────────────────────────
+// ── Filtros de estilo (filterBar) — aislados del grupo de complejidad ─────────
 document.getElementById('filterBar').addEventListener('click', e => {
   const btn = e.target.closest('.filter-btn');
   if (!btn) return;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  // Solo resetear activos DENTRO del filterBar
+  document.querySelectorAll('#filterBar .filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   filtroActual = btn.dataset.estilo;
   aplicarFiltro();
@@ -226,6 +254,8 @@ function limpiarFormulario() {
   document.getElementById('servicioDesc').value   = '';
   document.getElementById('servicioPrecio').value = '';
   document.getElementById('servicioEstilo').value = 'Pixel Art';
+  const cmpReset = document.getElementById('servicioComplejidad');
+  if (cmpReset) cmpReset.value = 'Simple';
   document.getElementById('servicioEstado').value = 'activo';
   document.getElementById('estadoGroup').style.display = 'none';
 
@@ -256,6 +286,8 @@ async function abrirEditar(id) {
   document.getElementById('servicioDesc').value   = s.descripcion;
   document.getElementById('servicioPrecio').value = s.precio;
   document.getElementById('servicioEstilo').value = s.estilo;
+  const cmpSelect = document.getElementById('servicioComplejidad');
+  if (cmpSelect) cmpSelect.value = s.complejidad || 'Simple';
   document.getElementById('servicioEstado').value = s.estado;
   document.getElementById('estadoGroup').style.display = '';
 
@@ -295,11 +327,14 @@ document.getElementById('modalServicioGuardar').addEventListener('click', async 
     return;
   }
 
+  const complejidad = document.getElementById('servicioComplejidad')?.value || 'Simple';
+
   const fd = new FormData();
   fd.append('titulo',      titulo);
   fd.append('descripcion', descripcion);
   fd.append('precio',      precio);
   fd.append('estilo',      estilo);
+  fd.append('complejidad', complejidad);
   fd.append('estado',      estado);
 
   const previewFile = document.getElementById('servicioPreview')?.files?.[0];

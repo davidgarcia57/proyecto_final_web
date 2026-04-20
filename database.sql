@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
   password   VARCHAR(255) NOT NULL,
   rol        ENUM('artista','comprador','admin') NOT NULL DEFAULT 'comprador',
   bio        TEXT         DEFAULT NULL,
+  saldo_oro  DECIMAL(10,2) NOT NULL DEFAULT 0.00,
   created_at TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
@@ -36,6 +37,7 @@ CREATE TABLE IF NOT EXISTS servicios (
   descripcion   TEXT           NOT NULL,
   precio        DECIMAL(10,2)  NOT NULL,
   estilo        VARCHAR(60)    NOT NULL DEFAULT 'Pixel Art',
+  complejidad   ENUM('Simple','Detallado','Epico') NOT NULL DEFAULT 'Simple',
   artista_id    INT            NOT NULL,
   imagen_url    VARCHAR(500)   DEFAULT NULL,  -- preview publica (PNG/JPG/GIF)
   archivo_url   VARCHAR(500)   DEFAULT NULL,  -- asset descargable (.aseprite, .psd, .zip, etc.)
@@ -107,3 +109,39 @@ ON DUPLICATE KEY UPDATE titulo = titulo;
 -- ─────────────────────────────────────────────────────────────────────────────
 -- INSERT INTO usuarios (nombre, email, password, rol) VALUES
 --   ('Administrador', 'admin@forgepixel.com', '<hash_bcrypt_aqui>', 'admin');
+
+-- ─── Mensajería por pedido ────────────────────────────────────────────────────
+--  Hilo de chat entre comprador y artista, vinculado a un pedido.
+--  Acceso restringido: solo comprador_id o artista_id del pedido pueden leer/escribir.
+CREATE TABLE IF NOT EXISTS mensajes (
+  id         INT        AUTO_INCREMENT PRIMARY KEY,
+  pedido_id  INT        NOT NULL,
+  autor_id   INT        NOT NULL,
+  contenido  TEXT       NOT NULL,
+  created_at TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_msg_pedido FOREIGN KEY (pedido_id)
+    REFERENCES pedidos(id)   ON DELETE CASCADE,
+  CONSTRAINT fk_msg_autor  FOREIGN KEY (autor_id)
+    REFERENCES usuarios(id)  ON DELETE RESTRICT
+) ENGINE=InnoDB;
+
+-- ─── Sistema de valoraciones ──────────────────────────────────────────────────
+--  Un comprador puede valorar un pedido completado exactamente una vez.
+--  La unicidad (UNIQUE KEY uq_valoracion_pedido) lo garantiza a nivel BD.
+CREATE TABLE IF NOT EXISTS valoraciones (
+  id           INT        AUTO_INCREMENT PRIMARY KEY,
+  servicio_id  INT        NOT NULL,
+  comprador_id INT        NOT NULL,
+  pedido_id    INT        NOT NULL,
+  estrellas    TINYINT    NOT NULL,
+  comentario   TEXT       DEFAULT NULL,
+  created_at   TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT chk_estrellas CHECK (estrellas BETWEEN 1 AND 5),
+  UNIQUE  KEY uq_valoracion_pedido (pedido_id),
+  CONSTRAINT fk_val_servicio  FOREIGN KEY (servicio_id)
+    REFERENCES servicios(id) ON DELETE CASCADE,
+  CONSTRAINT fk_val_comprador FOREIGN KEY (comprador_id)
+    REFERENCES usuarios(id)  ON DELETE RESTRICT,
+  CONSTRAINT fk_val_pedido    FOREIGN KEY (pedido_id)
+    REFERENCES pedidos(id)   ON DELETE CASCADE
+) ENGINE=InnoDB;

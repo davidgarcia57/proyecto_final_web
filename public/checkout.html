@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Forge &amp; Pixel — Checkout</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="app-loading">
+
+  <div class="app-shell">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo">
+        <img src="/images/logo_forge.png" alt="Forge and Pixel" style="height:32px;width:auto;object-fit:contain;flex-shrink:0;" />
+        <span class="sidebar-logo-text">
+          <span class="brand-forge">F</span><span class="brand-amp">&amp;</span><span class="brand-pixel">P</span>
+        </span>
+      </div>
+      <nav class="sidebar-nav">
+        <span class="sidebar-label" id="sidebarRoleLabel">Menú</span>
+        <a href="/dashboard.html" class="sidebar-item" id="sidebarPanelLink">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          Panel
+        </a>
+        <a href="/marketplace.html" class="sidebar-item active">
+          <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          Marketplace
+        </a>
+        <a href="/mis-compras.html" class="sidebar-item">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          Mis Compras
+        </a>
+        <a href="/vallecardo.html" class="sidebar-item">
+          <svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M8 10v4"/><circle cx="15" cy="12" r="1"/><circle cx="18" cy="10" r="1"/><circle cx="18" cy="14" r="1"/></svg>
+          Vallecardo
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="sidebar-logout" id="logoutBtn">
+          <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Cerrar Sesión
+        </button>
+      </div>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="page-wrapper">
+
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="sidebar-toggle" id="sidebarToggle" aria-label="Abrir menu">
+            <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <div class="topbar-brand">
+            <span class="brand-forge">F</span><span class="brand-amp">&amp;</span><span class="brand-pixel">P</span>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <div class="topbar-user">
+            <div class="topbar-avatar" id="topbarAvatar">?</div>
+            <span class="topbar-user-name" id="topbarName">—</span>
+          </div>
+          <button class="topbar-icon-btn settings-btn" id="settingsBtn" title="Ajustes">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <main class="container" style="max-width:860px;">
+
+        <!-- Breadcrumb -->
+        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1.25rem;font-size:0.8rem;color:var(--text-dim);">
+          <a href="/marketplace.html" style="color:var(--cyan);text-decoration:none;">Marketplace</a>
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          <span>Checkout</span>
+        </div>
+
+        <div class="section-eyebrow">Confirmar pedido</div>
+        <h1 class="section-title" style="margin-bottom:1.5rem;">Checkout</h1>
+
+        <!-- Estado de carga -->
+        <div id="checkoutLoading" style="color:var(--text-dim);padding:2rem 0;">Cargando servicio...</div>
+
+        <!-- Layout principal (oculto hasta cargar) -->
+        <div id="checkoutContent" class="hidden">
+          <div class="checkout-grid">
+
+            <!-- Columna izquierda: método de pago + notas -->
+            <div class="checkout-col-main">
+
+              <div class="checkout-section">
+                <h2 class="checkout-section-title">Método de pago</h2>
+                <div class="payment-methods">
+
+                  <label class="payment-option" id="optTarjeta">
+                    <input type="radio" name="metodoPago" value="tarjeta" checked />
+                    <div class="payment-option-inner">
+                      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/>
+                      </svg>
+                      <div>
+                        <div class="payment-name">Tarjeta de crédito / débito</div>
+                        <div class="payment-sub">Visa, Mastercard, AMEX</div>
+                      </div>
+                    </div>
+                    <div class="payment-check">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                  </label>
+
+                  <!-- Detalles tarjeta -->
+                  <div id="formTarjeta" class="payment-form">
+                    <div class="form-row">
+                      <div class="form-group flex-1">
+                        <label>Número de tarjeta</label>
+                        <input type="text" class="form-control" placeholder="1234 5678 9012 3456" maxlength="19" id="cardNumber" />
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <div class="form-group flex-1">
+                        <label>Titular</label>
+                        <input type="text" class="form-control" placeholder="Nombre como aparece en la tarjeta" id="cardName" />
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <div class="form-group" style="flex:1;">
+                        <label>Expiración</label>
+                        <input type="text" class="form-control" placeholder="MM/AA" maxlength="5" id="cardExp" />
+                      </div>
+                      <div class="form-group" style="flex:1;">
+                        <label>CVV</label>
+                        <input type="password" class="form-control" placeholder="•••" maxlength="4" id="cardCvv" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <label class="payment-option" id="optPaypal">
+                    <input type="radio" name="metodoPago" value="paypal" />
+                    <div class="payment-option-inner">
+                      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M7 11C7 11 6 17 12 17H17C20 17 22 15 22 12C22 9 20 7 17 7H7Z"/>
+                        <path d="M4 7C4 7 3 13 9 13H14C17 13 19 11 19 8C19 5 17 3 14 3H4Z"/>
+                      </svg>
+                      <div>
+                        <div class="payment-name">PayPal</div>
+                        <div class="payment-sub">Pago seguro por PayPal</div>
+                      </div>
+                    </div>
+                    <div class="payment-check">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                  </label>
+
+                  <div id="formPaypal" class="payment-form hidden">
+                    <div class="form-group">
+                      <label>Correo de PayPal</label>
+                      <input type="email" class="form-control" placeholder="tu@email.com" id="paypalEmail" />
+                    </div>
+                  </div>
+
+                  <label class="payment-option" id="optOro">
+                    <input type="radio" name="metodoPago" value="oro" />
+                    <div class="payment-option-inner">
+                      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M9.5 9.5C9.5 8.1 10.6 7 12 7s2.5 1.1 2.5 2.5c0 2.5-2.5 3.5-2.5 3.5"/>
+                        <path d="M12 17v.01"/>
+                      </svg>
+                      <div>
+                        <div class="payment-name">Oro de Vallecardo</div>
+                        <div class="payment-sub">Saldo: <strong id="oroDisponible">0</strong> monedas de oro</div>
+                      </div>
+                    </div>
+                    <div class="payment-check">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                  </label>
+
+                  <div id="formOro" class="payment-form hidden">
+                    <div id="oroSuficienteMsg" class="checkout-notice checkout-notice-ok hidden">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                      Tienes suficiente oro para completar este pedido.
+                    </div>
+                    <div id="oroInsuficienteMsg" class="checkout-notice checkout-notice-warn hidden">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/><circle cx="12" cy="12" r="10"/></svg>
+                      Saldo insuficiente. Necesitas <strong id="oroNeeded">0</strong> monedas de oro.
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- Notas del pedido -->
+              <div class="checkout-section">
+                <h2 class="checkout-section-title">Notas para el artista <span style="font-weight:400;color:var(--text-dim);">(opcional)</span></h2>
+                <textarea id="checkoutNotas" class="form-control" style="min-height:90px;"
+                  placeholder="Describe tu visión, referencias, estilo preferido..."></textarea>
+              </div>
+
+            </div>
+
+            <!-- Columna derecha: resumen del pedido -->
+            <div class="checkout-col-aside">
+              <div class="checkout-summary">
+                <h2 class="checkout-section-title">Resumen del pedido</h2>
+
+                <!-- Thumb del servicio -->
+                <div id="summaryThumb" class="checkout-thumb thumb-default">??</div>
+
+                <div class="summary-service-title" id="summaryTitulo">—</div>
+                <div class="summary-service-artist">
+                  Artista: <span id="summaryArtista">—</span>
+                </div>
+
+                <div class="summary-badges" id="summaryBadges"></div>
+
+                <div class="summary-divider"></div>
+
+                <div class="summary-row">
+                  <span>Precio del servicio</span>
+                  <span id="summaryPrecio">—</span>
+                </div>
+                <div class="summary-row summary-row-total">
+                  <span>Total</span>
+                  <span id="summaryTotal">—</span>
+                </div>
+
+                <div class="summary-divider"></div>
+
+                <button class="btn btn-primary" id="btnConfirmar" style="width:100%;margin-top:0.25rem;">
+                  Confirmar Pedido
+                </button>
+                <a href="/marketplace.html" class="btn btn-ghost" style="width:100%;margin-top:0.5rem;text-align:center;display:block;">
+                  Cancelar
+                </a>
+
+                <p class="summary-disclaimer">
+                  Al confirmar, aceptas los términos de la comunidad Forge &amp; Pixel.
+                  El artista será notificado y tienes 7 días para solicitar revisiones.
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Estado de error -->
+        <div id="checkoutError" class="empty-state hidden">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          <strong>Servicio no encontrado</strong>
+          <p>El servicio que intentas contratar no existe o fue eliminado.</p>
+          <a href="/marketplace.html" class="btn btn-primary" style="margin-top:1rem;">Volver al marketplace</a>
+        </div>
+
+      </main>
+    </div>
+
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- Panel de ajustes -->
+  <div id="settingsOverlay" class="settings-overlay"></div>
+  <aside id="settingsPanel" class="settings-panel">
+    <div class="settings-header">
+      <h2>Ajustes</h2>
+      <button id="closeSettings" class="settings-close">&times;</button>
+    </div>
+    <div class="settings-body">
+      <div>
+        <p class="settings-section-label">Mi perfil</p>
+        <div class="settings-profile-card">
+          <div class="settings-avatar-lg" id="settingsAvatar">?</div>
+          <div>
+            <span class="settings-user-name"  id="settingsName">—</span>
+            <span class="settings-user-email" id="settingsEmail">—</span>
+            <span class="settings-user-badge">
+              <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              Activo
+            </span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <p class="settings-section-label">Apariencia</p>
+        <div class="theme-options">
+          <button class="theme-btn" data-theme-val="system">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+            Sistema
+          </button>
+          <button class="theme-btn" data-theme-val="light">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/></svg>
+            Claro
+          </button>
+          <button class="theme-btn" data-theme-val="dark">
+            <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            Oscuro
+          </button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <script src="js/api.js"></script>
+  <script src="js/settings.js"></script>
+  <script src="js/checkout-app.js"></script>
+
+</body>
+</html>

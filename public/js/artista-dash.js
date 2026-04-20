@@ -94,7 +94,12 @@ function renderMiniGrid(servicios) {
   avatarEl.textContent = usuario.nombre.trim().charAt(0).toUpperCase();
   avatarEl.classList.add('avatar-artista');
   document.getElementById('topbarName').textContent = usuario.nombre;
-  document.getElementById('welcomeMsg').textContent   = `Bienvenido de vuelta, ${usuario.nombre}`;
+
+  // A7: welcomeName es el <span> del nombre, welcomeMsg es el subtítulo
+  const welcomeNameEl = document.getElementById('welcomeName');
+  const welcomeMsgEl  = document.getElementById('welcomeMsg');
+  if (welcomeNameEl) welcomeNameEl.textContent = usuario.nombre;
+  if (welcomeMsgEl)  welcomeMsgEl.textContent  = 'Forjando el futuro del pixel art indie';
 
   // Cargar servicios propios
   const rServ = await Api.servicios.propios();
@@ -103,10 +108,10 @@ function renderMiniGrid(servicios) {
 
   // Cargar ventas
   const rVentas = await Api.pedidos.ventas();
-  const ventas  = (rVentas?.ok && Array.isArray(rVentas.data)) ? rVentas.data : [];
+  const ventas      = (rVentas?.ok && Array.isArray(rVentas.data)) ? rVentas.data : [];
+  const completados = ventas.filter(v => v.estado === 'completado');
   const pendientes  = ventas.filter(v => v.estado === 'pendiente').length;
-  const ingresos    = ventas
-    .filter(v => v.estado === 'completado')
+  const ingresos    = completados
     .reduce((acc, v) => acc + parseFloat(v.monto || 0), 0)
     .toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
@@ -114,6 +119,29 @@ function renderMiniGrid(servicios) {
   document.getElementById('statTotalVentas').textContent  = ventas.length;
   document.getElementById('statPendientes').textContent   = pendientes;
   document.getElementById('statIngresos').textContent     = `$${ingresos}`;
+
+  // A6: Cargar rating del perfil propio y llamar a populateHPBars
+  let ratingPromedio = 0;
+  try {
+    const rPerfil = await fetch(`/api/artistas/${usuario.id}`);
+    if (rPerfil.ok) {
+      const perfil = await rPerfil.json();
+      ratingPromedio = parseFloat(perfil.artista?.rating_promedio || 0);
+      // Mostrar saldo de oro
+      const oroEl = document.getElementById('statOro');
+      if (oroEl) oroEl.textContent = parseFloat(perfil.artista?.saldo_oro || 0).toFixed(0);
+    }
+  } catch (_) {}
+
+  if (typeof window.populateHPBars === 'function') {
+    window.populateHPBars({
+      nombre:       usuario.nombre,
+      rating:       ratingPromedio,
+      totalPedidos: ventas.length,
+      completados:  completados.length,
+      saldo_oro:    usuario.saldo_oro ?? 0
+    });
+  }
 
   renderMiniGrid(servicios);
 
