@@ -1,469 +1,649 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Forge &amp; Pixel — Panel del Artista</title>
-  <link rel="stylesheet" href="css/style.css" />
-  <style>
-    /* ── CRT Scanlines — overlay sobre el contenido del dashboard ─────────── */
-    .crt-overlay {
-      position:       fixed;
-      inset:          0;
-      background-image: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(0,0,0,0.08) 2px,
-        rgba(0,0,0,0.08) 3px
-      );
-      pointer-events: none;
-      z-index:        999;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Forge &amp; Pixel — Panel del Artista</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+      /* ── CRT Scanlines — overlay sobre el contenido del dashboard ─────────── */
+      .crt-overlay {
+        position: fixed;
+        inset: 0;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(0, 0, 0, 0.08) 2px,
+          rgba(0, 0, 0, 0.08) 3px
+        );
+        pointer-events: none;
+        z-index: 999;
+      }
 
-    /* ── Oro de Vallecardo — color y glow especial ────────────────────────── */
-    .stat-card-oro {
-      border-top: 3px solid var(--yellow);
-    }
-    .stat-card-oro:hover {
-      box-shadow: var(--yellow-glow);
-      transform:  translate(-2px, -2px);
-    }
-    .stat-card-oro .stat-icon {
-      background: var(--yellow-dim);
-      border:     1px solid var(--yellow);
-    }
-    .stat-card-oro .stat-icon svg { color: var(--yellow); }
-    .stat-card-oro .stat-number   { color: var(--yellow); }
+      /* ── Oro de Vallecardo — color y glow especial ────────────────────────── */
+      .stat-card-oro {
+        border-top: 3px solid var(--yellow);
+      }
+      .stat-card-oro:hover {
+        box-shadow: var(--yellow-glow);
+        transform: translate(-2px, -2px);
+      }
+      .stat-card-oro .stat-icon {
+        background: var(--yellow-dim);
+        border: 1px solid var(--yellow);
+      }
+      .stat-card-oro .stat-icon svg {
+        color: var(--yellow);
+      }
+      .stat-card-oro .stat-number {
+        color: var(--yellow);
+      }
 
-    /* ── HP Bar — barra de vida estilo Vallecardo ─────────────────────────── */
-    .hp-bar-wrapper {
-      margin-top:    1.5rem;
-      background:    var(--surface);
-      border:        2px solid var(--border);
-      border-radius: var(--radius);
-      padding:       1rem 1.25rem 1.1rem;
-      box-shadow:    var(--shadow-hard-sm);
-    }
-    .hp-bar-label {
-      display:         flex;
-      justify-content: space-between;
-      align-items:     center;
-      margin-bottom:   0.5rem;
-    }
-    .hp-bar-title {
-      font-family:    var(--font-pixel);
-      font-size:      0.85rem;
-      color:          var(--text-dim);
-      letter-spacing: 0.06em;
-    }
-    .hp-bar-value {
-      font-family: var(--font-mono);
-      font-size:   0.82rem;
-      color:       var(--green);
-    }
-    .hp-bar-track {
-      height:        14px;
-      background:    var(--surface2);
-      border:        1px solid var(--border);
-      border-radius: 1px;
-      overflow:      hidden;
-      image-rendering: pixelated;
-      position:      relative;
-    }
-    /* Dientes de sierra pixel-art en la barra */
-    .hp-bar-track::before {
-      content:          '';
-      position:         absolute;
-      inset:            0;
-      background-image: repeating-linear-gradient(
-        90deg,
-        transparent, transparent 7px,
-        rgba(0,0,0,0.25) 7px, rgba(0,0,0,0.25) 8px
-      );
-      z-index: 1;
-      pointer-events: none;
-    }
-    .hp-bar-fill {
-      height:        100%;
-      background:    linear-gradient(90deg, var(--green) 0%, #5DB870 100%);
-      transition:    width 0.6s ease;
-      min-width:     4px;
-      position:      relative;
-    }
-    .hp-bar-fill.hp-low    { background: linear-gradient(90deg, var(--rose)   0%, #E85070 100%); }
-    .hp-bar-fill.hp-medium { background: linear-gradient(90deg, var(--yellow) 0%, #E8AE40 100%); }
+      /* ── HP Bar — barra de vida estilo Vallecardo ─────────────────────────── */
+      .hp-bar-wrapper {
+        margin-top: 1.5rem;
+        background: var(--surface);
+        border: 2px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1rem 1.25rem 1.1rem;
+        box-shadow: var(--shadow-hard-sm);
+      }
+      .hp-bar-label {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+      }
+      .hp-bar-title {
+        font-family: var(--font-pixel);
+        font-size: 0.85rem;
+        color: var(--text-dim);
+        letter-spacing: 0.06em;
+      }
+      .hp-bar-value {
+        font-family: var(--font-mono);
+        font-size: 0.82rem;
+        color: var(--green);
+      }
+      .hp-bar-track {
+        height: 14px;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 1px;
+        overflow: hidden;
+        image-rendering: pixelated;
+        position: relative;
+      }
+      /* Dientes de sierra pixel-art en la barra */
+      .hp-bar-track::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: repeating-linear-gradient(
+          90deg,
+          transparent,
+          transparent 7px,
+          rgba(0, 0, 0, 0.25) 7px,
+          rgba(0, 0, 0, 0.25) 8px
+        );
+        z-index: 1;
+        pointer-events: none;
+      }
+      .hp-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--green) 0%, #5db870 100%);
+        transition: width 0.6s ease;
+        min-width: 4px;
+        position: relative;
+      }
+      .hp-bar-fill.hp-low {
+        background: linear-gradient(90deg, var(--rose) 0%, #e85070 100%);
+      }
+      .hp-bar-fill.hp-medium {
+        background: linear-gradient(90deg, var(--yellow) 0%, #e8ae40 100%);
+      }
 
-    /* Barra de reputación (estrellas) */
-    .rep-bar-fill {
-      background: linear-gradient(90deg, var(--yellow) 0%, #E8C040 100%);
-    }
+      /* Barra de reputación (estrellas) */
+      .rep-bar-fill {
+        background: linear-gradient(90deg, var(--yellow) 0%, #e8c040 100%);
+      }
 
-    /* ── Forge Badge — etiqueta de rango del artista ──────────────────────── */
-    .forge-rank-badge {
-      display:        inline-flex;
-      align-items:    center;
-      gap:            0.4rem;
-      font-family:    var(--font-pixel);
-      font-size:      0.75rem;
-      letter-spacing: 0.08em;
-      padding:        0.25rem 0.6rem;
-      border:         2px solid var(--yellow);
-      color:          var(--yellow);
-      background:     var(--yellow-dim);
-      box-shadow:     var(--shadow-hard-sm);
-      text-shadow:    var(--yellow-glow);
-    }
-    .forge-rank-badge svg {
-      width:  14px;
-      height: 14px;
-      fill:   none;
-      stroke: currentColor;
-      stroke-width: 2;
-    }
+      /* ── Forge Badge — etiqueta de rango del artista ──────────────────────── */
+      .forge-rank-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-family: var(--font-pixel);
+        font-size: 0.75rem;
+        letter-spacing: 0.08em;
+        padding: 0.25rem 0.6rem;
+        border: 2px solid var(--yellow);
+        color: var(--yellow);
+        background: var(--yellow-dim);
+        box-shadow: var(--shadow-hard-sm);
+        text-shadow: var(--yellow-glow);
+      }
+      .forge-rank-badge svg {
+        width: 14px;
+        height: 14px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+      }
 
-    /* ── Bienvenida inmersiva ─────────────────────────────────────────────── */
-    .dash-welcome {
-      background:    var(--surface);
-      border:        2px solid var(--border);
-      border-left:   4px solid var(--accent);
-      padding:       1rem 1.25rem;
-      margin-bottom: 1.75rem;
-      display:       flex;
-      align-items:   center;
-      justify-content: space-between;
-      gap:           1rem;
-      flex-wrap:     wrap;
-      box-shadow:    var(--shadow-hard-sm);
-      position:      relative;
-      overflow:      hidden;
-    }
-    /* Grano de carbón detrás */
-    .dash-welcome::after {
-      content:          '';
-      position:         absolute;
-      inset:            0;
-      background-image: repeating-linear-gradient(
-        45deg,
-        transparent, transparent 8px,
-        rgba(200,90,43,0.03) 8px, rgba(200,90,43,0.03) 9px
-      );
-      pointer-events: none;
-    }
-    .dash-welcome-title {
-      font-family:    var(--font-pixel);
-      font-size:      1.05rem;
-      color:          var(--text);
-      letter-spacing: 0.04em;
-      line-height:    1.3;
-    }
-    .dash-welcome-title span { color: var(--accent); text-shadow: var(--accent-glow); }
-    .dash-welcome-sub {
-      font-size:  0.82rem;
-      color:      var(--muted);
-      margin-top: 0.2rem;
-    }
+      /* ── Bienvenida inmersiva ─────────────────────────────────────────────── */
+      .dash-welcome {
+        background: var(--surface);
+        border: 2px solid var(--border);
+        border-left: 4px solid var(--accent);
+        padding: 1rem 1.25rem;
+        margin-bottom: 1.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+        box-shadow: var(--shadow-hard-sm);
+        position: relative;
+        overflow: hidden;
+      }
+      /* Grano de carbón detrás */
+      .dash-welcome::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: repeating-linear-gradient(
+          45deg,
+          transparent,
+          transparent 8px,
+          rgba(200, 90, 43, 0.03) 8px,
+          rgba(200, 90, 43, 0.03) 9px
+        );
+        pointer-events: none;
+      }
+      .dash-welcome-title {
+        font-family: var(--font-pixel);
+        font-size: 1.05rem;
+        color: var(--text);
+        letter-spacing: 0.04em;
+        line-height: 1.3;
+      }
+      .dash-welcome-title span {
+        color: var(--accent);
+        text-shadow: var(--accent-glow);
+      }
+      .dash-welcome-sub {
+        font-size: 0.82rem;
+        color: var(--muted);
+        margin-top: 0.2rem;
+      }
 
-    /* ── Stat card override: usar sombra dura del sistema forja ──────────── */
-    .stat-card { position: relative; }
-  </style>
-</head>
-<body class="app-loading">
+      /* ── Stat card override: usar sombra dura del sistema forja ──────────── */
+      .stat-card {
+        position: relative;
+      }
+    </style>
+  </head>
+  <body class="app-loading">
+    <!-- CRT overlay inmersivo -->
+    <div class="crt-overlay" aria-hidden="true"></div>
 
-<!-- CRT overlay inmersivo -->
-<div class="crt-overlay" aria-hidden="true"></div>
-
-<div class="app-shell">
-
-  <!-- Sidebar -->
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-logo">
-      <img src="/images/logo_forge.png" alt="Forge and Pixel" style="height:32px;width:auto;object-fit:contain;flex-shrink:0;" />
-      <span class="sidebar-logo-text">
-        <span class="brand-forge">F</span><span class="brand-amp">&amp;</span><span class="brand-pixel">P</span>
-      </span>
-    </div>
-    <nav class="sidebar-nav">
-      <span class="sidebar-label">Artista</span>
-      <a href="/artista-dashboard.html" class="sidebar-item active">
-        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-        Panel
-      </a>
-      <a href="/marketplace.html?v=mis" class="sidebar-item">
-        <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-        Mi Catálogo
-      </a>
-      <a href="/mis-ventas.html" class="sidebar-item">
-        <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        Mis Ventas
-      </a>
-      <a href="/vallecardo.html" class="sidebar-item">
-        <svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M8 10v4"/><circle cx="15" cy="12" r="1"/><circle cx="18" cy="10" r="1"/><circle cx="18" cy="14" r="1"/></svg>
-        Vallecardo
-      </a>
-    </nav>
-    <div class="sidebar-footer">
-      <button class="sidebar-logout" id="logoutBtn">
-        <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-        Cerrar Sesión
-      </button>
-    </div>
-  </aside>
-
-  <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-  <div class="page-wrapper">
-
-    <header class="topbar">
-      <div class="topbar-left">
-        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Abrir menu">
-          <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-        </button>
-        <div class="topbar-brand">
-          <span class="brand-forge">F</span><span class="brand-amp">&amp;</span><span class="brand-pixel">P</span>
-        </div>
-      </div>
-      <div class="topbar-right">
-        <span class="role-badge-topbar role-artista">Artista</span>
-        <div class="topbar-user">
-          <div class="topbar-avatar" id="topbarAvatar">?</div>
-          <span class="topbar-user-name" id="topbarName">—</span>
-        </div>
-        <button class="topbar-icon-btn settings-btn" id="settingsBtn" title="Ajustes">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        </button>
-      </div>
-    </header>
-
-    <main class="container">
-
-      <!-- Bienvenida inmersiva -->
-      <div class="dash-welcome">
-        <div>
-          <div class="dash-welcome-title">
-            Bienvenido al taller, <span id="welcomeName">Artista</span>
-          </div>
-          <div class="dash-welcome-sub" id="welcomeMsg">Forjando el futuro del pixel art indie</div>
-        </div>
-        <span class="forge-rank-badge" id="forgeRank">
-          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          Aprendiz de Forja
-        </span>
-      </div>
-
-      <!-- Stats — 5 tarjetas incluyendo Oro de Vallecardo -->
-      <section class="stats-grid">
-        <div class="stat-card stat-card-cyan">
-          <div class="stat-icon">
-            <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-          </div>
-          <div class="stat-info">
-            <span id="statMisServicios" class="stat-number">—</span>
-            <span class="stat-label">Servicios publicados</span>
-          </div>
-        </div>
-        <div class="stat-card stat-card-accent">
-          <div class="stat-icon">
-            <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          </div>
-          <div class="stat-info">
-            <span id="statTotalVentas" class="stat-number">—</span>
-            <span class="stat-label">Ventas totales</span>
-          </div>
-        </div>
-        <div class="stat-card stat-card-yellow">
-          <div class="stat-icon">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          </div>
-          <div class="stat-info">
-            <span id="statPendientes" class="stat-number">—</span>
-            <span class="stat-label">Pedidos pendientes</span>
-          </div>
-        </div>
-        <div class="stat-card stat-card-green">
-          <div class="stat-icon">
-            <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-          </div>
-          <div class="stat-info">
-            <span id="statIngresos" class="stat-number">—</span>
-            <span class="stat-label">Ingresos (MXN)</span>
-          </div>
-        </div>
-        <!-- Oro de Vallecardo -->
-        <div class="stat-card stat-card-oro">
-          <div class="stat-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="M12 6v2m0 8v2M9 9l1.5 1.5M13.5 13.5 15 15M6 12h2m8 0h2M9 15l1.5-1.5M13.5 10.5 15 9"/></svg>
-          </div>
-          <div class="stat-info">
-            <span id="statOro" class="stat-number">—</span>
-            <span class="stat-label">Oro de Vallecardo</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- HP Bars — progreso visual estilo RPG -->
-      <div class="hp-bar-wrapper">
-        <div class="hp-bar-label">
-          <span class="hp-bar-title">REPUTACIÓN DEL FORJADOR</span>
-          <span class="hp-bar-value" id="hpRepValor">0.0 / 5.0</span>
-        </div>
-        <div class="hp-bar-track">
-          <div class="hp-bar-fill rep-bar-fill" id="hpRepFill" style="width:0%"></div>
-        </div>
-
-        <div class="hp-bar-label" style="margin-top:0.85rem;">
-          <span class="hp-bar-title">PEDIDOS COMPLETADOS</span>
-          <span class="hp-bar-value" id="hpPedValor">0 / 0</span>
-        </div>
-        <div class="hp-bar-track">
-          <div class="hp-bar-fill" id="hpPedFill" style="width:0%"></div>
-        </div>
-      </div>
-
-      <!-- Accesos rápidos -->
-      <p class="section-title" style="margin-top:1.75rem;">Accesos Rápidos</p>
-      <div class="quick-grid">
-        <a href="/marketplace.html" class="quick-card">
-          <div class="quick-card-icon" style="background:var(--accent-dim);border:2px solid var(--accent);">
-            <svg viewBox="0 0 24 24" style="color:var(--accent);"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          </div>
-          <div>
-            <span class="quick-card-title">Publicar Servicio</span>
-            <span class="quick-card-desc">Agrega un nuevo asset al marketplace</span>
-          </div>
-          <div class="quick-card-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
-        </a>
-        <a href="/pedidos.html" class="quick-card">
-          <div class="quick-card-icon" style="background:var(--cyan-dim);border:2px solid var(--cyan);">
-            <svg viewBox="0 0 24 24" style="color:var(--cyan);"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          </div>
-          <div>
-            <span class="quick-card-title">Ver Ventas</span>
-            <span class="quick-card-desc">Gestiona los pedidos de tus servicios</span>
-          </div>
-          <div class="quick-card-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
-        </a>
-        <a href="/vallecardo.html" class="quick-card">
-          <div class="quick-card-icon" style="background:var(--yellow-dim);border:2px solid var(--yellow);">
-            <svg viewBox="0 0 24 24" style="color:var(--yellow);"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M8 10v4"/><circle cx="15" cy="12" r="1"/><circle cx="18" cy="10" r="1"/><circle cx="18" cy="14" r="1"/></svg>
-          </div>
-          <div>
-            <span class="quick-card-title">Vallecardo</span>
-            <span class="quick-card-desc">Noticias y actualizaciones del juego</span>
-          </div>
-          <div class="quick-card-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
-        </a>
-      </div>
-
-      <!-- Mis últimos servicios -->
-      <p class="section-title" style="margin-top:2rem;">Mis Servicios Recientes</p>
-      <div id="misServiciosGrid" class="services-grid"></div>
-      <div id="emptyMisServicios" class="empty-state hidden">
-        <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-        <strong>Sin servicios publicados</strong>
-        <p>Ve al marketplace para publicar tu primer servicio.</p>
-      </div>
-
-    </main>
-  </div>
-
-</div>
-
-<div id="toast" class="toast hidden"></div>
-
-<!-- Settings -->
-<div id="settingsOverlay" class="settings-overlay"></div>
-<aside id="settingsPanel" class="settings-panel">
-  <div class="settings-header">
-    <h2>Ajustes de Perfil</h2>
-    <button id="closeSettings" class="settings-close">&times;</button>
-  </div>
-  <div class="settings-body">
-    <div>
-      <p class="settings-section-label">Mi perfil</p>
-      <div class="settings-profile-card">
-        <div class="settings-avatar-lg" id="settingsAvatar">?</div>
-        <div>
-          <span class="settings-user-name"  id="settingsName">—</span>
-          <span class="settings-user-email" id="settingsEmail">—</span>
-          <span class="settings-user-badge">
-            <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-            Artista Activo
+    <div class="app-shell">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+          <img
+            src="/images/logo_forge.png"
+            alt="Forge and Pixel"
+            style="
+              height: 32px;
+              width: auto;
+              object-fit: contain;
+              flex-shrink: 0;
+            "
+          />
+          <span class="sidebar-logo-text">
+            <span class="brand-forge">F</span
+            ><span class="brand-amp">&amp;</span
+            ><span class="brand-pixel">P</span>
           </span>
         </div>
+        <nav class="sidebar-nav">
+          <span class="sidebar-label">Artista</span>
+          <a href="/artista-dashboard.html" class="sidebar-item active">
+            <svg viewBox="0 0 24 24">
+              <rect x="3" y="3" width="7" height="7" rx="1" />
+              <rect x="14" y="3" width="7" height="7" rx="1" />
+              <rect x="3" y="14" width="7" height="7" rx="1" />
+              <rect x="14" y="14" width="7" height="7" rx="1" />
+            </svg>
+            Panel
+          </a>
+          <a href="/marketplace.html?v=mis" class="sidebar-item">
+            <svg viewBox="0 0 24 24">
+              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <path d="M16 10a4 4 0 0 1-8 0" />
+            </svg>
+            Mi Catálogo
+          </a>
+          <a href="/mis-ventas.html" class="sidebar-item">
+            <svg viewBox="0 0 24 24">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+            </svg>
+            Mis Ventas
+          </a>
+          <a href="/vallecardo.html" class="sidebar-item">
+            <svg viewBox="0 0 24 24">
+              <rect x="2" y="6" width="20" height="12" rx="2" />
+              <path d="M6 12h4M8 10v4" />
+              <circle cx="15" cy="12" r="1" />
+              <circle cx="18" cy="10" r="1" />
+              <circle cx="18" cy="14" r="1" />
+            </svg>
+            Vallecardo
+          </a>
+        </nav>
+        <div class="sidebar-footer">
+          <button class="sidebar-logout" id="logoutBtn">
+            <svg viewBox="0 0 24 24">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+            Cerrar Sesión
+          </button>
+        </div>
+      </aside>
+
+      <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+      <div class="page-wrapper">
+        <header class="topbar">
+          <div class="topbar-left">
+            <button
+              class="sidebar-toggle"
+              id="sidebarToggle"
+              aria-label="Abrir menu"
+            >
+              <svg viewBox="0 0 24 24">
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+              </svg>
+            </button>
+            <div class="topbar-brand">
+              <span class="brand-forge">F</span
+              ><span class="brand-amp">&amp;</span
+              ><span class="brand-pixel">P</span>
+            </div>
+          </div>
+          <div class="topbar-right">
+            <span class="role-badge-topbar role-artista">Artista</span>
+            <div class="topbar-user">
+              <div class="topbar-avatar" id="topbarAvatar">?</div>
+              <span class="topbar-user-name" id="topbarName">—</span>
+            </div>
+            <button
+              class="topbar-icon-btn settings-btn"
+              id="settingsBtn"
+              title="Ajustes"
+            >
+              <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="3" />
+                <path
+                  d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+                />
+              </svg>
+            </button>
+          </div>
+        </header>
+
+        <main class="container">
+          <!-- Bienvenida inmersiva -->
+          <div class="dash-welcome">
+            <div>
+              <div class="dash-welcome-title">
+                Bienvenido al taller, <span id="welcomeName">Artista</span>
+              </div>
+              <div class="dash-welcome-sub" id="welcomeMsg">
+                Forjando el futuro del pixel art indie
+              </div>
+            </div>
+            <span class="forge-rank-badge" id="forgeRank">
+              <svg viewBox="0 0 24 24">
+                <polygon
+                  points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                />
+              </svg>
+              Aprendiz de Forja
+            </span>
+          </div>
+
+          <!-- Stats — 5 tarjetas incluyendo Oro de Vallecardo -->
+          <section class="stats-grid">
+            <div class="stat-card stat-card-cyan">
+              <div class="stat-icon">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"
+                  />
+                  <line x1="3" y1="6" x2="21" y2="6" />
+                  <path d="M16 10a4 4 0 0 1-8 0" />
+                </svg>
+              </div>
+              <div class="stat-info">
+                <span id="statMisServicios" class="stat-number">—</span>
+                <span class="stat-label">Servicios publicados</span>
+              </div>
+            </div>
+            <div class="stat-card stat-card-accent">
+              <div class="stat-icon">
+                <svg viewBox="0 0 24 24">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                </svg>
+              </div>
+              <div class="stat-info">
+                <span id="statTotalVentas" class="stat-number">—</span>
+                <span class="stat-label">Ventas totales</span>
+              </div>
+            </div>
+            <div class="stat-card stat-card-yellow">
+              <div class="stat-icon">
+                <svg viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+              </div>
+              <div class="stat-info">
+                <span id="statPendientes" class="stat-number">—</span>
+                <span class="stat-label">Pedidos pendientes</span>
+              </div>
+            </div>
+            <div class="stat-card stat-card-green">
+              <div class="stat-icon">
+                <svg viewBox="0 0 24 24">
+                  <line x1="12" y1="1" x2="12" y2="23" />
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                </svg>
+              </div>
+              <div class="stat-info">
+                <span id="statIngresos" class="stat-number">—</span>
+                <span class="stat-label">Ingresos (MXN)</span>
+              </div>
+            </div>
+            <!-- Oro de Vallecardo -->
+            <div class="stat-card stat-card-oro">
+              <div class="stat-icon">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                >
+                  <circle cx="12" cy="12" r="8" />
+                  <path
+                    d="M12 6v2m0 8v2M9 9l1.5 1.5M13.5 13.5 15 15M6 12h2m8 0h2M9 15l1.5-1.5M13.5 10.5 15 9"
+                  />
+                </svg>
+              </div>
+              <div class="stat-info">
+                <span id="statOro" class="stat-number">—</span>
+                <span class="stat-label">Oro de Vallecardo</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- HP Bars — progreso visual estilo RPG -->
+          <div class="hp-bar-wrapper">
+            <div class="hp-bar-label">
+              <span class="hp-bar-title">REPUTACIÓN DEL FORJADOR</span>
+              <span class="hp-bar-value" id="hpRepValor">0.0 / 5.0</span>
+            </div>
+            <div class="hp-bar-track">
+              <div
+                class="hp-bar-fill rep-bar-fill"
+                id="hpRepFill"
+                style="width: 0%"
+              ></div>
+            </div>
+
+            <div class="hp-bar-label" style="margin-top: 0.85rem">
+              <span class="hp-bar-title">PEDIDOS COMPLETADOS</span>
+              <span class="hp-bar-value" id="hpPedValor">0 / 0</span>
+            </div>
+            <div class="hp-bar-track">
+              <div class="hp-bar-fill" id="hpPedFill" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <!-- Accesos rápidos -->
+          <p class="section-title" style="margin-top: 1.75rem">
+            Accesos Rápidos
+          </p>
+          <div class="quick-grid">
+            <a href="/marketplace.html" class="quick-card">
+              <div
+                class="quick-card-icon"
+                style="
+                  background: var(--accent-dim);
+                  border: 2px solid var(--accent);
+                "
+              >
+                <svg viewBox="0 0 24 24" style="color: var(--accent)">
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+              </div>
+              <div>
+                <span class="quick-card-title">Publicar Servicio</span>
+                <span class="quick-card-desc"
+                  >Agrega un nuevo asset al marketplace</span
+                >
+              </div>
+              <div class="quick-card-arrow">
+                <svg viewBox="0 0 24 24">
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </div>
+            </a>
+            <a href="/pedidos.html" class="quick-card">
+              <div
+                class="quick-card-icon"
+                style="
+                  background: var(--cyan-dim);
+                  border: 2px solid var(--cyan);
+                "
+              >
+                <svg viewBox="0 0 24 24" style="color: var(--cyan)">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                </svg>
+              </div>
+              <div>
+                <span class="quick-card-title">Ver Ventas</span>
+                <span class="quick-card-desc"
+                  >Gestiona los pedidos de tus servicios</span
+                >
+              </div>
+              <div class="quick-card-arrow">
+                <svg viewBox="0 0 24 24">
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </div>
+            </a>
+            <a href="/vallecardo.html" class="quick-card">
+              <div
+                class="quick-card-icon"
+                style="
+                  background: var(--yellow-dim);
+                  border: 2px solid var(--yellow);
+                "
+              >
+                <svg viewBox="0 0 24 24" style="color: var(--yellow)">
+                  <rect x="2" y="6" width="20" height="12" rx="2" />
+                  <path d="M6 12h4M8 10v4" />
+                  <circle cx="15" cy="12" r="1" />
+                  <circle cx="18" cy="10" r="1" />
+                  <circle cx="18" cy="14" r="1" />
+                </svg>
+              </div>
+              <div>
+                <span class="quick-card-title">Vallecardo</span>
+                <span class="quick-card-desc"
+                  >Noticias y actualizaciones del juego</span
+                >
+              </div>
+              <div class="quick-card-arrow">
+                <svg viewBox="0 0 24 24">
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </div>
+            </a>
+          </div>
+
+          <!-- Mis últimos servicios -->
+          <p class="section-title" style="margin-top: 2rem">
+            Mis Servicios Recientes
+          </p>
+          <div id="misServiciosGrid" class="services-grid"></div>
+          <div id="emptyMisServicios" class="empty-state hidden">
+            <svg viewBox="0 0 24 24">
+              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <path d="M16 10a4 4 0 0 1-8 0" />
+            </svg>
+            <strong>Sin servicios publicados</strong>
+            <p>Ve al marketplace para publicar tu primer servicio.</p>
+          </div>
+        </main>
       </div>
     </div>
-    <div>
-      <p class="settings-section-label">Apariencia</p>
-      <div class="theme-options">
-        <button class="theme-btn" data-theme-val="system">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-          Sistema
-        </button>
-        <button class="theme-btn" data-theme-val="light">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/></svg>
-          Claro
-        </button>
-        <button class="theme-btn" data-theme-val="dark">
-          <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-          Oscuro
-        </button>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <!-- Settings -->
+    <div id="settingsOverlay" class="settings-overlay"></div>
+    <aside id="settingsPanel" class="settings-panel">
+      <div class="settings-header">
+        <h2>Ajustes de Perfil</h2>
+        <button id="closeSettings" class="settings-close">&times;</button>
       </div>
-    </div>
-  </div>
-</aside>
+      <div class="settings-body">
+        <div>
+          <p class="settings-section-label">Mi perfil</p>
+          <div class="settings-profile-card">
+            <div class="settings-avatar-lg" id="settingsAvatar">?</div>
+            <div>
+              <span class="settings-user-name" id="settingsName">—</span>
+              <span class="settings-user-email" id="settingsEmail">—</span>
+              <span class="settings-user-badge">
+                <svg viewBox="0 0 24 24">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                  <polyline points="22 4 12 14.01 9 11.01" />
+                </svg>
+                Artista Activo
+              </span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <p class="settings-section-label">Apariencia</p>
+          <div class="theme-options">
+            <button class="theme-btn" data-theme-val="system">
+              <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="4" />
+                <path
+                  d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
+                />
+              </svg>
+              Sistema
+            </button>
+            <button class="theme-btn" data-theme-val="light">
+              <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="5" />
+                <line x1="12" y1="1" x2="12" y2="3" />
+                <line x1="12" y1="21" x2="12" y2="23" />
+              </svg>
+              Claro
+            </button>
+            <button class="theme-btn" data-theme-val="dark">
+              <svg viewBox="0 0 24 24">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              </svg>
+              Oscuro
+            </button>
+          </div>
+        </div>
+      </div>
+    </aside>
 
-<script src="js/api.js"></script>
-<script src="js/settings.js"></script>
-<script src="js/artista-dash.js"></script>
-<script>
-  /* ── HP Bars — inicialización desde datos del dashboard ──────────────────── */
-  document.addEventListener('DOMContentLoaded', () => {
-    // La función populateHPBars es llamada desde artista-dash.js
-    // cuando ya tiene los datos de ventas. Se expone como global.
-    window.populateHPBars = function({ rating, totalPedidos, completados, nombre, saldo_oro }) {
-      // Bienvenida
-      const nameEl = document.getElementById('welcomeName');
-      if (nameEl && nombre) nameEl.textContent = nombre;
+    <script src="js/api.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/artista-dash.js"></script>
+    <script>
+      /* ── HP Bars — inicialización desde datos del dashboard ──────────────────── */
+      document.addEventListener("DOMContentLoaded", () => {
+        // La función populateHPBars es llamada desde artista-dash.js
+        // cuando ya tiene los datos de ventas. Se expone como global.
+        window.populateHPBars = function ({
+          rating,
+          totalPedidos,
+          completados,
+          nombre,
+          saldo_oro,
+        }) {
+          // Bienvenida
+          const nameEl = document.getElementById("welcomeName");
+          if (nameEl && nombre) nameEl.textContent = nombre;
 
-      // Oro de Vallecardo
-      const oroEl = document.getElementById('statOro');
-      if (oroEl) oroEl.textContent = saldo_oro != null ? parseFloat(saldo_oro).toFixed(0) : '0';
+          // Oro de Vallecardo
+          const oroEl = document.getElementById("statOro");
+          if (oroEl)
+            oroEl.textContent =
+              saldo_oro != null ? parseFloat(saldo_oro).toFixed(0) : "0";
 
-      // HP Reputación
-      const repPct = Math.min((parseFloat(rating) / 5) * 100, 100);
-      const repFill = document.getElementById('hpRepFill');
-      const repVal  = document.getElementById('hpRepValor');
-      if (repFill) {
-        repFill.style.width = repPct + '%';
-        repFill.classList.toggle('hp-low',    repPct < 30);
-        repFill.classList.toggle('hp-medium', repPct >= 30 && repPct < 60);
-      }
-      if (repVal) repVal.textContent = parseFloat(rating).toFixed(1) + ' / 5.0';
+          // HP Reputación
+          const repPct = Math.min((parseFloat(rating) / 5) * 100, 100);
+          const repFill = document.getElementById("hpRepFill");
+          const repVal = document.getElementById("hpRepValor");
+          if (repFill) {
+            repFill.style.width = repPct + "%";
+            repFill.classList.toggle("hp-low", repPct < 30);
+            repFill.classList.toggle("hp-medium", repPct >= 30 && repPct < 60);
+          }
+          if (repVal)
+            repVal.textContent = parseFloat(rating).toFixed(1) + " / 5.0";
 
-      // HP Pedidos completados
-      const pedPct = totalPedidos > 0 ? Math.min((completados / totalPedidos) * 100, 100) : 0;
-      const pedFill = document.getElementById('hpPedFill');
-      const pedVal  = document.getElementById('hpPedValor');
-      if (pedFill) {
-        pedFill.style.width = pedPct + '%';
-        pedFill.classList.toggle('hp-low',    pedPct < 30);
-        pedFill.classList.toggle('hp-medium', pedPct >= 30 && pedPct < 60);
-      }
-      if (pedVal) pedVal.textContent = completados + ' / ' + totalPedidos;
+          // HP Pedidos completados
+          const pedPct =
+            totalPedidos > 0
+              ? Math.min((completados / totalPedidos) * 100, 100)
+              : 0;
+          const pedFill = document.getElementById("hpPedFill");
+          const pedVal = document.getElementById("hpPedValor");
+          if (pedFill) {
+            pedFill.style.width = pedPct + "%";
+            pedFill.classList.toggle("hp-low", pedPct < 30);
+            pedFill.classList.toggle("hp-medium", pedPct >= 30 && pedPct < 60);
+          }
+          if (pedVal) pedVal.textContent = completados + " / " + totalPedidos;
 
-      // Forge Rank según reputación y ventas
-      const rankEl = document.getElementById('forgeRank');
-      if (rankEl) {
-        let rank = 'Aprendiz de Forja';
-        if (completados >= 50 || parseFloat(rating) >= 4.8) rank = 'Maestro Forjador';
-        else if (completados >= 20 || parseFloat(rating) >= 4.0) rank = 'Artesano del Yunque';
-        else if (completados >= 5  || parseFloat(rating) >= 3.0) rank = 'Forjador Novato';
-        rankEl.querySelector('svg').insertAdjacentText('afterend', ' ');
-        rankEl.lastChild.textContent = rank;
-      }
-    };
-  });
-</script>
-</body>
+          // Forge Rank según reputación y ventas
+          const rankEl = document.getElementById("forgeRank");
+          if (rankEl) {
+            let rank = "Aprendiz de Forja";
+            if (completados >= 50 || parseFloat(rating) >= 4.8)
+              rank = "Maestro Forjador";
+            else if (completados >= 20 || parseFloat(rating) >= 4.0)
+              rank = "Artesano del Yunque";
+            else if (completados >= 5 || parseFloat(rating) >= 3.0)
+              rank = "Forjador Novato";
+            rankEl.querySelector("svg").insertAdjacentText("afterend", " ");
+            rankEl.lastChild.textContent = rank;
+          }
+        };
+      });
+    </script>
+  </body>
 </html>

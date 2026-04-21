@@ -1,114 +1,162 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Forge &amp; Pixel — Perfil de Artista</title>
-  <link rel="stylesheet" href="css/style.css" />
-</head>
-<body>
-
-  <!-- ── Navbar ──────────────────────────────────────────────────────────── -->
-  <nav class="landing-nav" id="landingNav">
-    <a href="/index.html" class="landing-nav-brand">
-      <img src="/images/logo_forge.png" alt="Forge and Pixel" />
-      <span class="landing-nav-brand-text">
-        <span class="brand-forge">FORGE</span><span class="brand-amp"> &amp; </span><span class="brand-pixel">PIXEL</span>
-      </span>
-    </a>
-
-    <div class="landing-nav-links">
-      <a href="/marketplace.html" class="landing-nav-link">Marketplace</a>
-      <a href="/vallecardo.html"  class="landing-nav-link">Vallecardo</a>
-    </div>
-
-    <div class="landing-nav-actions" id="navActions">
-      <a href="/login.html" class="btn btn-ghost btn-sm">Iniciar Sesion</a>
-      <a href="/login.html#registro" class="btn btn-primary btn-sm">Registrarse</a>
-    </div>
-
-    <button class="landing-nav-toggle" id="navToggle" aria-label="Abrir menu">
-      <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-    </button>
-  </nav>
-
-  <!-- Menu movil -->
-  <div class="landing-nav-mobile" id="mobileMenu">
-    <a href="/marketplace.html" class="landing-nav-link">Marketplace</a>
-    <a href="/vallecardo.html"  class="landing-nav-link">Vallecardo</a>
-    <a href="/login.html" class="btn btn-ghost btn-sm">Iniciar Sesion</a>
-    <a href="/login.html" class="btn btn-primary btn-sm" id="mobileRegBtn">Registrarse</a>
-  </div>
-
-  <!-- ── Perfil del artista ────────────────────────────────────────────────── -->
-  <div id="profileLoading" style="display:flex;align-items:center;justify-content:center;min-height:60vh;color:var(--muted);font-family:var(--font-pixel);font-size:1.4rem;letter-spacing:0.05em;">
-    Cargando perfil...
-  </div>
-
-  <div id="profileContent" style="display:none;">
-
-    <section class="profile-hero">
-      <div class="profile-hero-inner">
-        <div class="profile-avatar" id="profileAvatar">?</div>
-        <div class="profile-info">
-          <h1 class="profile-name" id="profileName">—</h1>
-          <div class="profile-meta">
-            <span class="badge badge-accent" id="profileRole">Artista</span>
-            <span class="profile-joined" id="profileSince"></span>
-          </div>
-          <p class="profile-bio" id="profileBio"></p>
-        </div>
-      </div>
-    </section>
-
-    <div class="landing-section" style="padding-top:2.5rem;padding-bottom:4rem;">
-      <div class="section-header-row">
-        <div>
-          <span class="section-eyebrow">Portafolio</span>
-          <h2 class="section-heading" id="profileServicesTitle">Servicios disponibles</h2>
-        </div>
-        <a href="/marketplace.html" class="btn btn-ghost">
-          Ver marketplace
-          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-        </a>
-      </div>
-
-      <div id="artistaServicios" class="services-grid"></div>
-
-      <div id="emptyArtista" class="empty-state hidden">
-        <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-        <strong>Sin servicios activos</strong>
-        <p>Este artista no tiene servicios publicados por el momento.</p>
-      </div>
-    </div>
-
-  </div>
-
-  <div id="profileError" style="display:none;text-align:center;padding:6rem 1rem;">
-    <p style="font-family:var(--font-pixel);font-size:2rem;color:var(--rose);letter-spacing:0.05em;">404</p>
-    <p style="color:var(--muted);margin-top:0.5rem;">Artista no encontrado.</p>
-    <a href="/marketplace.html" class="btn btn-ghost" style="margin-top:1.5rem;display:inline-flex;">
-      Volver al Marketplace
-    </a>
-  </div>
-
-  <!-- ── Footer ───────────────────────────────────────────────────────────── -->
-  <footer class="landing-footer">
-    <div class="landing-footer-inner">
-      <div class="landing-footer-brand">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Forge &amp; Pixel — Perfil de Artista</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <!-- ── Navbar ──────────────────────────────────────────────────────────── -->
+    <nav class="landing-nav" id="landingNav">
+      <a href="/index.html" class="landing-nav-brand">
         <img src="/images/logo_forge.png" alt="Forge and Pixel" />
-        <span class="landing-footer-brand-text">
-          <span class="brand-forge">FORGE</span><span class="brand-amp"> &amp; </span><span class="brand-pixel">PIXEL</span>
+        <span class="landing-nav-brand-text">
+          <span class="brand-forge">FORGE</span
+          ><span class="brand-amp"> &amp; </span
+          ><span class="brand-pixel">PIXEL</span>
         </span>
+      </a>
+
+      <div class="landing-nav-links">
+        <a href="/marketplace.html" class="landing-nav-link">Marketplace</a>
+        <a href="/vallecardo.html" class="landing-nav-link">Vallecardo</a>
       </div>
-      <p class="landing-footer-copy">
-        &copy; 2026 Forge &amp; Pixel — Universidad Tecnológica de Durango
-      </p>
+
+      <div class="landing-nav-actions" id="navActions">
+        <a href="/login.html" class="btn btn-ghost btn-sm">Iniciar Sesion</a>
+        <a href="/login.html#registro" class="btn btn-primary btn-sm"
+          >Registrarse</a
+        >
+      </div>
+
+      <button class="landing-nav-toggle" id="navToggle" aria-label="Abrir menu">
+        <svg viewBox="0 0 24 24">
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
+      </button>
+    </nav>
+
+    <!-- Menu movil -->
+    <div class="landing-nav-mobile" id="mobileMenu">
+      <a href="/marketplace.html" class="landing-nav-link">Marketplace</a>
+      <a href="/vallecardo.html" class="landing-nav-link">Vallecardo</a>
+      <a href="/login.html" class="btn btn-ghost btn-sm">Iniciar Sesion</a>
+      <a href="/login.html" class="btn btn-primary btn-sm" id="mobileRegBtn"
+        >Registrarse</a
+      >
     </div>
-  </footer>
 
-  <div id="toast" class="toast hidden"></div>
+    <!-- ── Perfil del artista ────────────────────────────────────────────────── -->
+    <div
+      id="profileLoading"
+      style="
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 60vh;
+        color: var(--muted);
+        font-family: var(--font-pixel);
+        font-size: 1.4rem;
+        letter-spacing: 0.05em;
+      "
+    >
+      Cargando perfil...
+    </div>
 
-  <script src="js/artista-app.js"></script>
-</body>
+    <div id="profileContent" style="display: none">
+      <section class="profile-hero">
+        <div class="profile-hero-inner">
+          <div class="profile-avatar" id="profileAvatar">?</div>
+          <div class="profile-info">
+            <h1 class="profile-name" id="profileName">—</h1>
+            <div class="profile-meta">
+              <span class="badge badge-accent" id="profileRole">Artista</span>
+              <span class="profile-joined" id="profileSince"></span>
+            </div>
+            <p class="profile-bio" id="profileBio"></p>
+          </div>
+        </div>
+      </section>
+
+      <div
+        class="landing-section"
+        style="padding-top: 2.5rem; padding-bottom: 4rem"
+      >
+        <div class="section-header-row">
+          <div>
+            <span class="section-eyebrow">Portafolio</span>
+            <h2 class="section-heading" id="profileServicesTitle">
+              Servicios disponibles
+            </h2>
+          </div>
+          <a href="/marketplace.html" class="btn btn-ghost">
+            Ver marketplace
+            <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6" /></svg>
+          </a>
+        </div>
+
+        <div id="artistaServicios" class="services-grid"></div>
+
+        <div id="emptyArtista" class="empty-state hidden">
+          <svg viewBox="0 0 24 24">
+            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <path d="M16 10a4 4 0 0 1-8 0" />
+          </svg>
+          <strong>Sin servicios activos</strong>
+          <p>Este artista no tiene servicios publicados por el momento.</p>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="profileError"
+      style="display: none; text-align: center; padding: 6rem 1rem"
+    >
+      <p
+        style="
+          font-family: var(--font-pixel);
+          font-size: 2rem;
+          color: var(--rose);
+          letter-spacing: 0.05em;
+        "
+      >
+        404
+      </p>
+      <p style="color: var(--muted); margin-top: 0.5rem">
+        Artista no encontrado.
+      </p>
+      <a
+        href="/marketplace.html"
+        class="btn btn-ghost"
+        style="margin-top: 1.5rem; display: inline-flex"
+      >
+        Volver al Marketplace
+      </a>
+    </div>
+
+    <!-- ── Footer ───────────────────────────────────────────────────────────── -->
+    <footer class="landing-footer">
+      <div class="landing-footer-inner">
+        <div class="landing-footer-brand">
+          <img src="/images/logo_forge.png" alt="Forge and Pixel" />
+          <span class="landing-footer-brand-text">
+            <span class="brand-forge">FORGE</span
+            ><span class="brand-amp"> &amp; </span
+            ><span class="brand-pixel">PIXEL</span>
+          </span>
+        </div>
+        <p class="landing-footer-copy">
+          &copy; 2026 Forge &amp; Pixel — Universidad Tecnológica de Durango
+        </p>
+      </div>
+    </footer>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <script src="js/artista-app.js"></script>
+  </body>
 </html>

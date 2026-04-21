@@ -1,195 +1,276 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Forge &amp; Pixel — Marketplace de Pixel Art</title>
-  <link rel="stylesheet" href="css/style.css" />
-</head>
-<body>
-
-  <!-- ── Navbar ──────────────────────────────────────────────────────────── -->
-  <nav class="landing-nav" id="landingNav">
-    <a href="/index.html" class="landing-nav-brand">
-      <img src="/images/logo_forge.png" alt="Forge and Pixel" />
-      <span class="landing-nav-brand-text">
-        <span class="brand-forge">FORGE</span><span class="brand-amp"> &amp; </span><span class="brand-pixel">PIXEL</span>
-      </span>
-    </a>
-
-    <div class="landing-nav-links">
-      <a href="/marketplace.html" class="landing-nav-link">Marketplace</a>
-      <a href="/vallecardo.html"  class="landing-nav-link">Vallecardo</a>
-    </div>
-
-    <div class="landing-nav-actions" id="navActions">
-      <a href="/login.html" class="btn btn-ghost btn-sm">Iniciar Sesion</a>
-      <a href="/login.html#registro" class="btn btn-primary btn-sm">Registrarse</a>
-    </div>
-
-    <button class="landing-nav-toggle" id="navToggle" aria-label="Abrir menu">
-      <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-    </button>
-  </nav>
-
-  <!-- Menu movil -->
-  <div class="landing-nav-mobile" id="mobileMenu">
-    <a href="/marketplace.html" class="landing-nav-link">Marketplace</a>
-    <a href="/vallecardo.html"  class="landing-nav-link">Vallecardo</a>
-    <a href="/login.html" class="btn btn-ghost btn-sm">Iniciar Sesion</a>
-    <a href="/login.html#registro" class="btn btn-primary btn-sm" id="mobileRegBtn">Registrarse</a>
-  </div>
-
-  <!-- ── Hero ────────────────────────────────────────────────────────────── -->
-  <section class="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-inner">
-      <div class="hero-content">
-        <p class="hero-eyebrow">FORGE &amp; PIXEL</p>
-        <h1 class="hero-headline">Pixel art profesional,<br>artistas indie reales</h1>
-        <p class="hero-desc">
-          Conecta con artistas de pixel art de la comunidad indie. Contrata talento original para tu videojuego o publica tus servicios y empieza a generar ingresos.
-        </p>
-        <div class="hero-actions">
-          <a href="/marketplace.html" class="btn btn-cyan">
-            <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-            Explorar servicios
-          </a>
-          <a href="/login.html#registro" class="btn btn-primary" id="heroRegBtn">
-            Unirse gratis
-          </a>
-        </div>
-      </div>
-      <div class="hero-visual">
-        <img src="/images/personaje_principal.gif" alt="Personaje de Vallecardo" class="hero-character" />
-      </div>
-    </div>
-  </section>
-
-  <!-- ── Stats bar ─────────────────────────────────────────────────────────── -->
-  <div class="stats-bar">
-    <div class="stat-pill">
-      <span class="stat-pill-num" id="statArtistas">—</span>
-      <span class="stat-pill-lbl">Artistas activos</span>
-    </div>
-    <div class="stat-pill-divider"></div>
-    <div class="stat-pill">
-      <span class="stat-pill-num" id="statServicios">—</span>
-      <span class="stat-pill-lbl">Servicios disponibles</span>
-    </div>
-    <div class="stat-pill-divider"></div>
-    <div class="stat-pill">
-      <span class="stat-pill-num" id="statPedidos">—</span>
-      <span class="stat-pill-lbl">Pedidos realizados</span>
-    </div>
-  </div>
-
-  <!-- ── Servicios destacados ─────────────────────────────────────────────── -->
-  <section style="background:var(--bg);border-top:1px solid var(--border);">
-    <div class="landing-section">
-      <div class="section-header-row">
-        <div>
-          <span class="section-eyebrow">Marketplace</span>
-          <h2 class="section-heading">Servicios Disponibles</h2>
-          <p class="section-subheading">Trabajos de pixel art de artistas de la comunidad</p>
-        </div>
-        <a href="/marketplace.html" class="btn btn-ghost">
-          Ver todos
-          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-        </a>
-      </div>
-
-      <div id="serviciosDestacados" class="services-grid">
-        <!-- Cargado por landing.js -->
-      </div>
-
-      <div id="emptyDestacados" class="empty-state hidden">
-        <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-        <strong>Sin servicios aun</strong>
-        <p>Sé el primero en publicar un servicio.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── Vallecardo preview ────────────────────────────────────────────────── -->
-  <div class="vallecardo-preview-section">
-    <div class="landing-section-full">
-      <div class="landing-section">
-        <div class="vallecardo-preview-inner">
-          <div class="vallecardo-preview-visual">
-            <img src="/images/personaje_principal.gif" alt="Personaje principal de Vallecardo" class="vallecardo-char-preview" />
-          </div>
-          <div class="vallecardo-preview-text">
-            <span class="section-eyebrow">Proyecto propio</span>
-            <div class="vallecardo-preview-title">VALLECARDO</div>
-            <div class="vallecardo-preview-sub">RPG de pixel art — En desarrollo</div>
-            <p class="vallecardo-preview-desc">
-              Vallecardo es el juego original de Forge &amp; Pixel: un RPG de acción 2D con pixel art artesanal. Explora el valle de una civilización olvidada, combate criaturas y descubre los secretos de las ruinas. Cada sprite fue creado por artistas de nuestra comunidad.
-            </p>
-            <div class="vallecardo-badges">
-              <span class="badge badge-cyan">RPG 2D</span>
-              <span class="badge badge-accent">Pixel Art</span>
-              <span class="badge badge-yellow">En Desarrollo</span>
-            </div>
-            <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
-              <a href="/vallecardo.html" class="btn btn-cyan">
-                <svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M8 10v4"/><circle cx="15" cy="12" r="1"/><circle cx="18" cy="10" r="1"/><circle cx="18" cy="14" r="1"/></svg>
-                Ver mas sobre Vallecardo
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── CTA dual ──────────────────────────────────────────────────────────── -->
-  <section class="dual-cta-section">
-    <div class="dual-cta-grid">
-
-      <div class="dual-cta-card dual-cta-card-artista">
-        <div class="dual-cta-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
-          </svg>
-        </div>
-        <h3 class="dual-cta-title">Soy artista de pixel art</h3>
-        <p class="dual-cta-desc">Publica tus servicios y empieza a cobrar por tu trabajo creativo. Sin costos de entrada.</p>
-        <a href="/login.html#registro" class="btn btn-primary" id="ctaRegBtn">Crear cuenta gratis</a>
-      </div>
-
-      <div class="dual-cta-card dual-cta-card-comprador">
-        <div class="dual-cta-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M8 10v4"/><circle cx="15" cy="12" r="1"/><circle cx="18" cy="10" r="1"/><circle cx="18" cy="14" r="1"/>
-          </svg>
-        </div>
-        <h3 class="dual-cta-title">Busco pixel art para mi juego</h3>
-        <p class="dual-cta-desc">Encuentra artistas indie y contrata directamente, sin comisiones ocultas.</p>
-        <a href="/marketplace.html" class="btn btn-cyan">Explorar el marketplace</a>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ── Footer ───────────────────────────────────────────────────────────── -->
-  <footer class="landing-footer">
-    <div class="landing-footer-inner">
-      <div class="landing-footer-brand">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Forge &amp; Pixel — Marketplace de Pixel Art</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <!-- ── Navbar ──────────────────────────────────────────────────────────── -->
+    <nav class="landing-nav" id="landingNav">
+      <a href="/index.html" class="landing-nav-brand">
         <img src="/images/logo_forge.png" alt="Forge and Pixel" />
-        <span class="landing-footer-brand-text">
-          <span class="brand-forge">FORGE</span><span class="brand-amp"> &amp; </span><span class="brand-pixel">PIXEL</span>
+        <span class="landing-nav-brand-text">
+          <span class="brand-forge">FORGE</span
+          ><span class="brand-amp"> &amp; </span
+          ><span class="brand-pixel">PIXEL</span>
         </span>
+      </a>
+
+      <div class="landing-nav-links">
+        <a href="/marketplace.html" class="landing-nav-link">Marketplace</a>
+        <a href="/vallecardo.html" class="landing-nav-link">Vallecardo</a>
       </div>
-      <p class="landing-footer-copy">
-        &copy; 2026 Forge &amp; Pixel — Universidad Tecnológica de Durango
-      </p>
+
+      <div class="landing-nav-actions" id="navActions">
+        <a href="/login.html" class="btn btn-ghost btn-sm">Iniciar Sesion</a>
+        <a href="/login.html#registro" class="btn btn-primary btn-sm"
+          >Registrarse</a
+        >
+      </div>
+
+      <button class="landing-nav-toggle" id="navToggle" aria-label="Abrir menu">
+        <svg viewBox="0 0 24 24">
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
+      </button>
+    </nav>
+
+    <!-- Menu movil -->
+    <div class="landing-nav-mobile" id="mobileMenu">
+      <a href="/marketplace.html" class="landing-nav-link">Marketplace</a>
+      <a href="/vallecardo.html" class="landing-nav-link">Vallecardo</a>
+      <a href="/login.html" class="btn btn-ghost btn-sm">Iniciar Sesion</a>
+      <a
+        href="/login.html#registro"
+        class="btn btn-primary btn-sm"
+        id="mobileRegBtn"
+        >Registrarse</a
+      >
     </div>
-  </footer>
 
-  <!-- Toast -->
-  <div id="toast" class="toast hidden"></div>
+    <!-- ── Hero ────────────────────────────────────────────────────────────── -->
+    <section class="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-inner">
+        <div class="hero-content">
+          <p class="hero-eyebrow">FORGE &amp; PIXEL</p>
+          <h1 class="hero-headline">
+            Pixel art profesional,<br />artistas indie reales
+          </h1>
+          <p class="hero-desc">
+            Conecta con artistas de pixel art de la comunidad indie. Contrata
+            talento original para tu videojuego o publica tus servicios y
+            empieza a generar ingresos.
+          </p>
+          <div class="hero-actions">
+            <a href="/marketplace.html" class="btn btn-cyan">
+              <svg viewBox="0 0 24 24">
+                <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <path d="M16 10a4 4 0 0 1-8 0" />
+              </svg>
+              Explorar servicios
+            </a>
+            <a
+              href="/login.html#registro"
+              class="btn btn-primary"
+              id="heroRegBtn"
+            >
+              Unirse gratis
+            </a>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <img
+            src="/images/personaje_principal.gif"
+            alt="Personaje de Vallecardo"
+            class="hero-character"
+          />
+        </div>
+      </div>
+    </section>
 
-  <script src="js/landing.js"></script>
-</body>
+    <!-- ── Stats bar ─────────────────────────────────────────────────────────── -->
+    <div class="stats-bar">
+      <div class="stat-pill">
+        <span class="stat-pill-num" id="statArtistas">—</span>
+        <span class="stat-pill-lbl">Artistas activos</span>
+      </div>
+      <div class="stat-pill-divider"></div>
+      <div class="stat-pill">
+        <span class="stat-pill-num" id="statServicios">—</span>
+        <span class="stat-pill-lbl">Servicios disponibles</span>
+      </div>
+      <div class="stat-pill-divider"></div>
+      <div class="stat-pill">
+        <span class="stat-pill-num" id="statPedidos">—</span>
+        <span class="stat-pill-lbl">Pedidos realizados</span>
+      </div>
+    </div>
+
+    <!-- ── Servicios destacados ─────────────────────────────────────────────── -->
+    <section style="background: var(--bg); border-top: 1px solid var(--border)">
+      <div class="landing-section">
+        <div class="section-header-row">
+          <div>
+            <span class="section-eyebrow">Marketplace</span>
+            <h2 class="section-heading">Servicios Disponibles</h2>
+            <p class="section-subheading">
+              Trabajos de pixel art de artistas de la comunidad
+            </p>
+          </div>
+          <a href="/marketplace.html" class="btn btn-ghost">
+            Ver todos
+            <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6" /></svg>
+          </a>
+        </div>
+
+        <div id="serviciosDestacados" class="services-grid">
+          <!-- Cargado por landing.js -->
+        </div>
+
+        <div id="emptyDestacados" class="empty-state hidden">
+          <svg viewBox="0 0 24 24">
+            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <path d="M16 10a4 4 0 0 1-8 0" />
+          </svg>
+          <strong>Sin servicios aun</strong>
+          <p>Sé el primero en publicar un servicio.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Vallecardo preview ────────────────────────────────────────────────── -->
+    <div class="vallecardo-preview-section">
+      <div class="landing-section-full">
+        <div class="landing-section">
+          <div class="vallecardo-preview-inner">
+            <div class="vallecardo-preview-visual">
+              <img
+                src="/images/personaje_principal.gif"
+                alt="Personaje principal de Vallecardo"
+                class="vallecardo-char-preview"
+              />
+            </div>
+            <div class="vallecardo-preview-text">
+              <span class="section-eyebrow">Proyecto propio</span>
+              <div class="vallecardo-preview-title">VALLECARDO</div>
+              <div class="vallecardo-preview-sub">
+                RPG de pixel art — En desarrollo
+              </div>
+              <p class="vallecardo-preview-desc">
+                Vallecardo es el juego original de Forge &amp; Pixel: un RPG de
+                acción 2D con pixel art artesanal. Explora el valle de una
+                civilización olvidada, combate criaturas y descubre los secretos
+                de las ruinas en cada historia creada por nosotros (no se usa
+                IA). Cada sprite fue creado por artistas de nuestra comunidad.
+              </p>
+              <div class="vallecardo-badges">
+                <span class="badge badge-cyan">RPG 2D</span>
+                <span class="badge badge-accent">Pixel Art</span>
+                <span class="badge badge-yellow">En Desarrollo</span>
+              </div>
+              <div style="display: flex; gap: 0.75rem; flex-wrap: wrap">
+                <a href="/vallecardo.html" class="btn btn-cyan">
+                  <svg viewBox="0 0 24 24">
+                    <rect x="2" y="6" width="20" height="12" rx="2" />
+                    <path d="M6 12h4M8 10v4" />
+                    <circle cx="15" cy="12" r="1" />
+                    <circle cx="18" cy="10" r="1" />
+                    <circle cx="18" cy="14" r="1" />
+                  </svg>
+                  Ver mas sobre Vallecardo
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CTA dual ──────────────────────────────────────────────────────────── -->
+    <section class="dual-cta-section">
+      <div class="dual-cta-grid">
+        <div class="dual-cta-card dual-cta-card-artista">
+          <div class="dual-cta-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M12 20h9" />
+              <path
+                d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"
+              />
+            </svg>
+          </div>
+          <h3 class="dual-cta-title">Soy artista de pixel art</h3>
+          <p class="dual-cta-desc">
+            Publica tus servicios y empieza a cobrar por tu trabajo creativo.
+            Sin costos de entrada.
+          </p>
+          <a href="/login.html#registro" class="btn btn-primary" id="ctaRegBtn"
+            >Crear cuenta gratis</a
+          >
+        </div>
+
+        <div class="dual-cta-card dual-cta-card-comprador">
+          <div class="dual-cta-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="2" y="6" width="20" height="12" rx="2" />
+              <path d="M6 12h4M8 10v4" />
+              <circle cx="15" cy="12" r="1" />
+              <circle cx="18" cy="10" r="1" />
+              <circle cx="18" cy="14" r="1" />
+            </svg>
+          </div>
+          <h3 class="dual-cta-title">Busco pixel art para mi juego</h3>
+          <p class="dual-cta-desc">
+            Encuentra artistas indie y contrata directamente, sin comisiones
+            ocultas.
+          </p>
+          <a href="/marketplace.html" class="btn btn-cyan"
+            >Explorar el marketplace</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Footer ───────────────────────────────────────────────────────────── -->
+    <footer class="landing-footer">
+      <div class="landing-footer-inner">
+        <div class="landing-footer-brand">
+          <img src="/images/logo_forge.png" alt="Forge and Pixel" />
+          <span class="landing-footer-brand-text">
+            <span class="brand-forge">FORGE</span
+            ><span class="brand-amp"> &amp; </span
+            ><span class="brand-pixel">PIXEL</span>
+          </span>
+        </div>
+        <p class="landing-footer-copy">
+          &copy; 2026 Forge &amp; Pixel — Universidad Tecnológica de Durango
+        </p>
+      </div>
+    </footer>
+
+    <!-- Toast -->
+    <div id="toast" class="toast hidden"></div>
+
+    <script src="js/landing.js"></script>
+  </body>
 </html>
